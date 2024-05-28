@@ -1,5 +1,5 @@
 <template>
-<div class="leftUserControl">
+  <div class="leftUserControl">
     仿真用户列表
     <el-tooltip
       class="box-item"
@@ -92,956 +92,966 @@
           </template>
         </el-dialog>
   <div class="rightMapControl">
-  <el-row>
-    <el-col :span="24">
-      <el-dialog
-        v-model="powFindVisible"
-        title="仿真流程进行中!"
-        width="40%"
-        :before-close="powFindHandleClose"
-        :show-close="false"
-      >
-        <div style="padding-left: 20%; padding-right: 20%">
-          <!-- <el-progress :percentage="percentage" :color="customColors" /> -->
-          <el-progress
-            :percentage="percentage"
-            :color="customColors"
-            :status="staus"
-            :indeterminate="true"
-            :duration="1"
-            :stroke-width="20"
-          />
-          <!-- <el-form :model="showBlockMes">
-            <el-descriptions title="">
-              <el-descriptions-item label="">
-                <span style="font-size: 18px; font-weight: bold"
-                  >仿真流程进行中！</span
-                >
-              </el-descriptions-item></el-descriptions
-            ></el-form
-          > -->
-          <div></div>
-        </div>
-      </el-dialog>
-      <el-dialog
-        v-model="dialogDetailTransVisible"
-        title="请选择交易id"
-        width="20%"
-      >
-        <el-button
-          v-for="item in targetTransData"
-          type="text"
-          @click="getOutputData(item)"
-          >{{ item }}</el-button
+    <el-row>
+      <el-col :span="24">
+        <el-dialog
+          v-model="powFindVisible"
+          title="仿真流程进行中!"
+          width="40%"
+          :before-close="powFindHandleClose"
+          :show-close="false"
         >
-      </el-dialog>
-      <div>
-        <el-drawer
-          v-model="innerDrawer"
-          direction="rtl"
-          title="交易列表"
-          :append-to-body="true"
-          size="75%"
-        >
-          <c-scrollbar maxWidth="400" height="640px" trigger="hover">
-            <el-table :data="blockTableData" style="width: 100%">
-              <el-table-column prop="id" label="id" width="40" />
-              <el-table-column prop="hash" label="hash" width="200" />
-              <el-table-column label="inputId" width="100">
-                <template #default="scope">
-                  <el-button
-                    type="text"
-                    @click="getInputData(scope.row.inputId)"
-                    >{{ scope.row.inputId }}</el-button
-                  >
-                </template>
-              </el-table-column>
-              <el-table-column label="outputsId" width="100">
-                <template #default="scope">
-                  <el-button
-                    v-if="getDataContain(scope.row.outputsId)"
-                    type="text"
-                    @click="getOutputData(scope.row.outputsId)"
-                    >{{ scope.row.outputsId }}</el-button
-                  >
-                  <div v-if="!getDataContain(scope.row.outputsId)">
-                    <el-button
-                      v-for="item in targetTransData"
-                      type="text"
-                      @click="getOutputData(item)"
-                      >{{ item }}</el-button
+          <div style="padding-left: 20%; padding-right: 20%">
+            <!-- <el-progress :percentage="percentage" :color="customColors" /> -->
+            <el-progress
+              :percentage="percentage"
+              :color="customColors"
+              :status="staus"
+              :indeterminate="true"
+              :duration="1"
+              :stroke-width="20"
+            />
+            <!-- <el-form :model="showBlockMes">
+                <el-descriptions title="">
+                  <el-descriptions-item label="">
+                    <span style="font-size: 18px; font-weight: bold"
+                      >仿真流程进行中！</span
                     >
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="totalInput"
-                label="totalInput"
-                width="100"
-              />
-              <el-table-column
-                prop="totalOutput"
-                label="totalOutput"
-                width="110"
-              />
-              <el-table-column
-                prop="createTime"
-                label="createTime"
-                width="200"
-              />
-              <el-table-column prop="status" label="status" width="100" />
-              <el-table-column prop="utxo" label="utxo" width="100" />
-            </el-table>
-          </c-scrollbar>
-        </el-drawer>
-        <el-dialog v-model="dialogInputVisible" width="440px">
-          <c-scrollbar maxWidth="400" trigger="hover">
-            <el-form :model="inputData">
-              <el-descriptions title="交易输入ID" :column="1" border>
-                <el-descriptions-item
-                  label="id"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  ><el-tag size="small">{{
-                    inputData.id
-                  }}</el-tag></el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="address"
-                  label-align="left"
-                  align="left"
-                  >{{ inputData.address }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="signature"
-                  label-align="left"
-                  align="left"
-                >
-                  {{ inputData.signature }}
-                </el-descriptions-item>
-                <el-descriptions-item
-                  label="pubKey"
-                  label-align="left"
-                  align="left"
-                >
-                  {{ inputData.pubKey }}
-                </el-descriptions-item>
-                <el-descriptions-item
-                  label="transId"
-                  label-align="left"
-                  align="left"
-                >
-                  <el-button
-                    v-for="item in inputData.transId"
-                    type="text"
-                    @click="getTransData(item)"
-                    >{{ item }}</el-button
-                  >
-                </el-descriptions-item>
-                <el-descriptions-item
-                  label="tranValue"
-                  label-align="left"
-                  align="left"
-                  >{{ inputData.tranValue }}</el-descriptions-item
-                >
-              </el-descriptions></el-form
-            ></c-scrollbar
-          >
+                  </el-descriptions-item></el-descriptions
+                ></el-form
+              > -->
+            <div></div>
+          </div>
         </el-dialog>
         <el-dialog
-          v-model="dialogSearchDataVisible"
-          width="840px"
-          title="查询结果"
+          v-model="dialogDetailTransVisible"
+          title="请选择交易id"
+          width="20%"
         >
-          <el-table :data="searchMesList" height="300" style="width: 100%">
-            <el-table-column prop="type" label="消息类型" width="200" />
-            <el-table-column prop="mes" label="消息内容" width="200" />
-            <el-table-column label="操作">
-              <template #default="scope">
-                <el-button
-                  v-if="
-                    scope.row.type == 'tradeRecBlock' ||
-                    scope.row.type == 'BlockTrade'
-                  "
-                  size="small"
-                  @click="showBlockDetial(scope.row)"
-                  >Check</el-button
-                >
-                <el-button
-                  v-else
-                  size="small"
-                  @click="showNodeDetial(scope.row)"
-                  >Check</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-dialog>
-        <el-dialog v-model="dialogOutPutVisible" width="440px">
-          <c-scrollbar maxWidth="400" trigger="hover">
-            <el-form :model="outputData">
-              <el-descriptions title="交易输出" :column="1" border>
-                <el-descriptions-item
-                  label="id"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  ><el-tag size="small">{{
-                    outputData.id
-                  }}</el-tag></el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="address"
-                  label-align="left"
-                  align="left"
-                  >{{ outputData.address }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="tranValue"
-                  label-align="left"
-                  align="left"
-                  >{{ outputData.tranValue }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="transId"
-                  label-align="left"
-                  align="left"
-                >
-                  <el-button
-                    v-for="item in outputData.transId"
-                    type="text"
-                    @click="getTransData(item)"
-                    >{{ item }}</el-button
-                  >
-                </el-descriptions-item>
-              </el-descriptions></el-form
-            ></c-scrollbar
-          >
-        </el-dialog>
-        <el-dialog v-model="dialogTransVisible" width="440px">
-          <c-scrollbar maxWidth="400" trigger="hover">
-            <el-form :model="transData">
-              <el-descriptions title="交易详情" :column="1" border>
-                <el-descriptions-item
-                  label="id"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  ><el-tag size="small">{{
-                    transData.id
-                  }}</el-tag></el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="TransHash"
-                  label-align="left"
-                  align="left"
-                  >{{ transData.hash }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="InputId"
-                  label-align="left"
-                  align="left"
-                >
-                  <el-button
-                    type="text"
-                    @click="getInputData(transData.inputId)"
-                    >{{ transData.inputId }}</el-button
-                  >
-                </el-descriptions-item>
-                <el-descriptions-item
-                  label="OutputId"
-                  label-align="left"
-                  align="left"
-                >
-                  <el-button
-                    type="text"
-                    @click="getOutputData(transData.outputId)"
-                    >{{ transData.outputId }}</el-button
-                  >
-                </el-descriptions-item>
-                <el-descriptions-item
-                  label="createTime"
-                  label-align="left"
-                  align="left"
-                  >{{ transData.createTime }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="totalInput"
-                  label-align="left"
-                  align="left"
-                  >{{ transData.totalInput }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="totalOutput"
-                  label-align="left"
-                  align="left"
-                  >{{ transData.totalOutput }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="status"
-                  label-align="left"
-                  align="left"
-                  >{{ transData.status }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="utxo"
-                  label-align="left"
-                  align="left"
-                  >{{ transData.utxo }}</el-descriptions-item
-                >
-              </el-descriptions></el-form
-            ></c-scrollbar
-          >
-        </el-dialog>
-      </div>
-      <div class="bs-sysMsg">
-        <span style="font-weight: bold"
-          ><span v-show="sysMesStates == false">区块和节点事件</span>
-          <el-input
-            v-show="sysMesStates == true"
-            size="small"
-            v-model="sysMesStatesContent"
-            style="width: 65%"
-            placeholder="输入想搜索的内容" />
-          <!-- <el-button
-            v-show="sysMesStates == false"
-            type="text"
-            size="small"
-            round
-            @click="sysMesStates = true"
-          > -->
-          <el-icon
-            v-show="sysMesStates == false"
-            @click="sysMesStates = true"
-            :size="20"
-            class="searchStartButton"
-          >
-            <Search />
-          </el-icon>
-          <!-- </el-button> -->
           <el-button
-            v-show="sysMesStates == true"
+            v-for="item in targetTransData"
             type="text"
-            size="small"
-            round
-            @click="searTargetMesList"
+            @click="getOutputData(item)" 
+            :key="item"
+            >{{ item }}</el-button
           >
-            搜索 </el-button
-          ><el-icon
-            v-show="sysMesStates == true"
-            @click="sysMesStates = false"
-            class="closebold"
-            ><CloseBold /></el-icon
-        ></span>
-        <el-collapse v-model="activeName" accordion>
-          <el-collapse-item name="1">
-            <template #title>
-              <el-carousel
-                style="width: 100%"
-                height="49px"
-                direction="vertical"
-                indicator-position="none"
-                :autoplay="false"
-                :interval="1000"
-              >
-                <!-- <el-carousel-item v-for="item in systemMsgNode" :key="item.id">
-                <span>{{ item.title }}</span>
-              </el-carousel-item> -->
-                <el-carousel-item>
-                  <span>点击查看节点消息</span>
-                </el-carousel-item>
-              </el-carousel>
-              <!-- <span>点击查看节点消息</span> -->
-            </template>
-            <!-- <c-scrollbar maxHeight="100%" trigger="hover"> -->
-            <c-scrollbar maxHeight="280px" height="280px" trigger="hover">
-              <div v-for="item in nodeMesVisList" class="event-content">
-                <div class="event-mes-block-node">
-                  {{ item.mes }}
-                </div>
-                <!-- <el-icon :size="18" class="iconfont">
-                    <Edit />
-                  </el-icon> -->
-                <div class="event-detail" @click="showNodeDetial(item)">
-                  <el-icon class="event-detail-buttom"><MoreFilled /></el-icon>
-                </div>
-              </div>
-            </c-scrollbar>
-          </el-collapse-item>
-          <el-collapse-item name="2">
-            <template #title>
-              <el-carousel
-                style="width: 100%"
-                height="49px"
-                direction="vertical"
-                indicator-position="none"
-                :autoplay="true"
-                :interval="1000"
-              >
-                <!-- <el-carousel-item v-for="item in systemMsgBlock" :key="item.id">
-                <span>{{ item.title }}</span>
-              </el-carousel-item> -->
-                <el-carousel-item>
-                  <span>点击查看区块消息</span>
-                </el-carousel-item>
-              </el-carousel>
-              <!-- <span>点击查看区块消息</span> -->
-            </template>
-            <c-scrollbar maxHeight="280px" height="280px" trigger="hover">
-              <div v-for="item in blockMesVisList" class="event-content">
-                <div class="event-mes-block-node">
-                  {{ item.mes }}
-                </div>
-                <!-- <el-icon :size="18" class="iconfont">
-                    <Edit />
-                  </el-icon> -->
-                <div class="event-detail" @click="showBlockDetial(item)">
-                  <el-icon class="event-detail-buttom"><MoreFilled /></el-icon>
-                </div>
-              </div>
-            </c-scrollbar>
-          </el-collapse-item>
-        </el-collapse>
-      </div>
-
-      <!-- 当前用户仿真数据获取 -->
-      <el-dialog v-model="simDataeVisible" title="仿真记录" width="36%">
-        <el-table :data="blockDataTableData" style="width: 100%">
-          <el-table-column prop="id" label="Id" width="60" />
-          <el-table-column prop="numOfNodes" label="NumOfNode" width="130" />
-          <el-table-column prop="numOfBlocks" label="NumOfBlock" width="130" />
-          <el-table-column prop="simEndTime" label="EndTime" width="200" />
-        </el-table>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="simDataeVisible = false">Cancel</el-button>
-            <!-- <el-button type="primary" @click="dialogNodeVisible = false"
-            >Confirm</el-button
-          > -->
-          </span>
-        </template>
-      </el-dialog>
-      <el-dialog v-model="dialogNodeVisible" title="详情" width="30%">
-        <el-form :model="nodeMesData">
-          <el-descriptions :column="1" border>
-            <el-descriptions-item
-              label="消息类型"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ nodeMesData.type }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息简略信息"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ nodeMesData.mes }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息状态"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ nodeMesData.state }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息发起节点"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ nodeMesData.from }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息接收节点"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ nodeMesData.to }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="发生时间"
-              label-align="left"
-              align="left"
-              min-width="100px"
-            >
-              <el-date-picker
-                v-model="nodeMesData.timestamp"
-                size="large"
-                type="datetime"
-                placeholder="选择结束时间"
-                :disabled="true"
-              />
-            </el-descriptions-item>
-            <el-descriptions-item
-              label="交易id"
-              label-align="left"
-              align="left"
-              min-width="100px"
-            >
-              <el-button
-                type="text"
-                @click="findDetailTrans(nodeMesData.transactionId)"
-                >{{ nodeMesData.transactionId }}</el-button
-              >
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogNodeVisible = false">Cancel</el-button>
-            <!-- <el-button type="primary" @click="dialogNodeVisible = false"
-            >Confirm</el-button
-          > -->
-          </span>
-        </template>
-      </el-dialog>
-      <el-dialog v-model="dialogBlockVisible" title="详情" width="50%">
-        <el-form :model="blockMesData">
-          <el-descriptions :column="2" border>
-            <el-descriptions-item
-              label="消息类型"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.type }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息简略信息"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.mes }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息状态"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.state }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息发起节点"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.from }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息接收节点"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.to }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息传输时间"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.tradeTime }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="传输区块ID"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.blockId }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="传输区块HASH"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.blockHash }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="当前区块高度"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ blockMesData.blockHeight }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="发生时间"
-              label-align="left"
-              align="left"
-              min-width="100px"
-            >
-              <el-date-picker
-                v-model="blockMesData.timestamp"
-                size="large"
-                type="datetime"
-                placeholder="选择结束时间"
-                :disabled="true"
-              />
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogBlockVisible = false">Cancel</el-button>
-            <!-- <el-button type="primary" @click="dialogBlockVisible = false"
-            >Confirm</el-button
-          > -->
-          </span>
-        </template>
-      </el-dialog>
-      <el-dialog v-model="dialogCreateVisible" title="详情" width="30%">
-        <el-form :model="createMesData">
-          <el-descriptions :column="1" border>
-            <el-descriptions-item
-              label="消息类型"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ createMesData.type }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="消息简略信息"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ createMesData.mes }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="区块挖掘难度"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ createMesData.blockDif }}</el-descriptions-item
-            >
-
-            <el-descriptions-item
-              label="矿工节点"
-              label-align="left"
-              align="left"
-              min-width="100px"
-              >{{ createMesData.miner }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="发生时间"
-              label-align="left"
-              align="left"
-              min-width="100px"
-            >
-              <el-date-picker
-                v-model="createMesData.timestamp"
-                size="large"
-                type="datetime"
-                placeholder="选择结束时间"
-                :disabled="true"
-              />
-            </el-descriptions-item>
-            <el-descriptions-item
-              label="挖矿奖励交易"
-              label-align="left"
-              align="left"
-              min-width="100px"
-            >
-              <el-button
-                type="text"
-                @click="findDetailTrans(createMesData.minerReward)"
-                >{{ createMesData.minerReward }}</el-button
-              >
-            </el-descriptions-item>
-            <el-descriptions-item
-              label="是否分叉块"
-              label-align="left"
-              align="left"
-              min-width="100px"
-            >
-              {{ createMesData.isOrphan }}
-            </el-descriptions-item>
-            <el-descriptions-item
-              label="认证交易列表"
-              label-align="left"
-              align="left"
-              min-width="100px"
-            >
-              <el-button
-                type="text"
-                @click="findDetailTrans(createMesData.transactionId)"
-                >{{ createMesData.transactionId }}</el-button
-              >
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogCreateVisible = false">Cancel</el-button>
-            <!-- <el-button type="primary" @click="dialogBlockVisible = false"
-            >Confirm</el-button
-          > -->
-          </span>
-        </template>
-      </el-dialog>
-      <el-dialog v-model="dialogNodeDetailVisible" title="节点详情" width="50%">
-        <el-form :model="dodeDetailMesData">
-          <div
-            style="
-              height: 100%;
-              width: 100%;
-              display: flex;
-              justify-content: center;
-            "
+        </el-dialog>
+        <div>
+          <el-drawer
+            v-model="innerDrawer"
+            direction="rtl"
+            title="交易列表"
+            :append-to-body="true"
+            size="75%"
           >
-            <div class="nodeDetail1">
-              <el-descriptions :column="1" border title="节点详情">
-                <el-descriptions-item
-                  label="节点ID"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  >{{ dodeDetailMesData.addressId }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="节点类型"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  >{{ dodeDetailMesData.nodeType }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="节点地域"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  v-model="regionData"
-                  >{{
-                    regionData[dodeDetailMesData.regionId]
-                  }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  v-if="dodeDetailMesData.nodeType == `miningNode`"
-                  label="节点算力"
-                  label-align="center"
-                  align="center"
-                  >{{ dodeDetailMesData.hashRate }} kH/s</el-descriptions-item
-                >
-              </el-descriptions>
-            </div>
-            <div class="nodeDetail1Account">
-              <el-descriptions :column="2" border title="账户详情">
-                <el-descriptions-item
-                  label="账户ID"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  >{{
-                    dodeDetailMesData.accountList.accountId
-                  }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="Transactions"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  >{{
-                    dodeDetailMesData.accountList.transactions
-                  }}</el-descriptions-item
-                >
-                <el-descriptions-item
-                  label="Total Received"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  >{{
-                    dodeDetailMesData.accountList.totalReceived
-                  }}</el-descriptions-item
-                ><el-descriptions-item
-                  label="Total Sent"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  >{{
-                    dodeDetailMesData.accountList.totalSent
-                  }}</el-descriptions-item
-                ><el-descriptions-item
-                  label="Final Balance"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  >{{
-                    dodeDetailMesData.accountList.balance
-                  }}</el-descriptions-item
-                ><el-descriptions-item
-                  label="Wallet Id"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  >{{ dodeDetailMesData.accountList.walletId.walletId
-                  }}<el-button
-                    type="text"
-                    @click="
-                      checkWallet(
-                        dodeDetailMesData.accountList.walletId,
-                        dodeDetailMesData.accountList.address
-                      )
-                    "
-                    >查看</el-button
-                  ></el-descriptions-item
-                ><el-descriptions-item
-                  label="交易列表ID"
-                  label-align="left"
-                  align="left"
-                  min-width="100px"
-                  ><div
-                    v-if="dodeDetailMesData.accountList.transactionsId != ``"
+            <c-scrollbar maxWidth="400" height="640px" trigger="hover">
+              <el-table :data="blockTableData" style="width: 100%">
+                <el-table-column prop="id" label="id" width="40" />
+                <el-table-column prop="hash" label="hash" width="200" />
+                <el-table-column label="inputId" width="100">
+                  <template #default="scope">
+                    <el-button
+                      type="text"
+                      @click="getInputData(scope.row.inputId)"
+                      >{{ scope.row.inputId }}</el-button
+                    >
+                  </template>
+                </el-table-column>
+                <el-table-column label="outputsId" width="100">
+                  <template #default="scope">
+                    <el-button
+                      v-if="getDataContain(scope.row.outputsId)"
+                      type="text"
+                      @click="getOutputData(scope.row.outputsId)"
+                      >{{ scope.row.outputsId }}</el-button
+                    >
+                    <div v-if="!getDataContain(scope.row.outputsId)">
+                      <el-button
+                        v-for="item in targetTransData"
+                        type="text"
+                        @click="getOutputData(item)"
+                        :key="item"
+                        >{{ item }}</el-button
+                      >
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="totalInput"
+                  label="totalInput"
+                  width="100"
+                />
+                <el-table-column
+                  prop="totalOutput"
+                  label="totalOutput"
+                  width="110"
+                />
+                <el-table-column
+                  prop="createTime"
+                  label="createTime"
+                  width="200"
+                />
+                <el-table-column prop="status" label="status" width="100" />
+                <el-table-column prop="utxo" label="utxo" width="100" />
+              </el-table>
+            </c-scrollbar>
+          </el-drawer>
+          <el-dialog v-model="dialogInputVisible" width="440px">
+            <c-scrollbar maxWidth="400" trigger="hover">
+              <el-form :model="inputData">
+                <el-descriptions title="交易输入ID" :column="1" border>
+                  <el-descriptions-item
+                    label="id"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    ><el-tag size="small">{{
+                      inputData.id
+                    }}</el-tag></el-descriptions-item
                   >
-                    <el-tooltip
-                      v-if="dodeDetailMesData.nodeType == `lightNode`"
-                      content="轻节点内账户的交易信息需要通过其他全节点查询!"
-                      placement="top"
-                      ><el-button
-                        size="small"
-                        @click="
-                          findDetailTrans(
-                            dodeDetailMesData.accountList.transactionsId
-                          )
-                        "
-                        round
-                        >查询交易
-                      </el-button>
-                    </el-tooltip>
-                  </div>
-                  <el-button
-                    v-if="dodeDetailMesData.nodeType != `lightNode`"
-                    type="text"
-                    @click="
-                      findDetailTrans(
-                        dodeDetailMesData.accountList.transactionsId
-                      )
-                    "
-                    >{{
-                      dodeDetailMesData.accountList.transactionsId
-                    }}</el-button
-                  ></el-descriptions-item
-                >
-              </el-descriptions>
-            </div>
-          </div>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogNodeDetailVisible = false"
-              >Cancel</el-button
+                  <el-descriptions-item
+                    label="address"
+                    label-align="left"
+                    align="left"
+                    >{{ inputData.address }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="signature"
+                    label-align="left"
+                    align="left"
+                  >
+                    {{ inputData.signature }}
+                  </el-descriptions-item>
+                  <el-descriptions-item
+                    label="pubKey"
+                    label-align="left"
+                    align="left"
+                  >
+                    {{ inputData.pubKey }}
+                  </el-descriptions-item>
+                  <el-descriptions-item
+                    label="transId"
+                    label-align="left"
+                    align="left"
+                  >
+                    <el-button
+                      v-for="item in inputData.transId"
+                      type="text"
+                      @click="getTransData(item)"
+                      :key="item"
+                      >{{ item }}</el-button
+                    >
+                  </el-descriptions-item>
+                  <el-descriptions-item
+                    label="tranValue"
+                    label-align="left"
+                    align="left"
+                    >{{ inputData.tranValue }}</el-descriptions-item
+                  >
+                </el-descriptions></el-form
+              ></c-scrollbar
             >
-            <!-- <el-button type="primary" @click="dialogBlockVisible = false"
-            >Confirm</el-button
-          > -->
-          </span>
-        </template>
-      </el-dialog>
-      <el-dialog v-model="dialogWalletVisible" width="440px">
-        <c-scrollbar maxWidth="400" trigger="hover">
-          <el-form :model="walletData">
-            <el-descriptions title="钱包结构信息" :column="1" border>
+          </el-dialog>
+          <el-dialog
+            v-model="dialogSearchDataVisible"
+            width="840px"
+            title="查询结果"
+          >
+            <el-table :data="searchMesList" height="300" style="width: 100%">
+              <el-table-column prop="type" label="消息类型" width="200" />
+              <el-table-column prop="mes" label="消息内容" width="200" />
+              <el-table-column label="操作">
+                <template #default="scope">
+                  <el-button
+                    v-if="
+                      scope.row.type == 'tradeRecBlock' ||
+                      scope.row.type == 'BlockTrade'
+                    "
+                    size="small"
+                    @click="showBlockDetial(scope.row)"
+                    >Check</el-button
+                  >
+                  <el-button
+                    v-else
+                    size="small"
+                    @click="showNodeDetial(scope.row)"
+                    >Check</el-button
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-dialog>
+          <el-dialog v-model="dialogOutPutVisible" width="440px">
+            <c-scrollbar maxWidth="400" trigger="hover">
+              <el-form :model="outputData">
+                <el-descriptions title="交易输出" :column="1" border>
+                  <el-descriptions-item
+                    label="id"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    ><el-tag size="small">{{
+                      outputData.id
+                    }}</el-tag></el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="address"
+                    label-align="left"
+                    align="left"
+                    >{{ outputData.address }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="tranValue"
+                    label-align="left"
+                    align="left"
+                    >{{ outputData.tranValue }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="transId"
+                    label-align="left"
+                    align="left"
+                  >
+                    <el-button
+                      v-for="item in outputData.transId"
+                      type="text"
+                      @click="getTransData(item)"
+                      :key="item"
+                      >{{ item }}</el-button
+                    >
+                  </el-descriptions-item>
+                </el-descriptions></el-form
+              ></c-scrollbar
+            >
+          </el-dialog>
+          <el-dialog v-model="dialogTransVisible" width="440px">
+            <c-scrollbar maxWidth="400" trigger="hover">
+              <el-form :model="transData">
+                <el-descriptions title="交易详情" :column="1" border>
+                  <el-descriptions-item
+                    label="id"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    ><el-tag size="small">{{
+                      transData.id
+                    }}</el-tag></el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="TransHash"
+                    label-align="left"
+                    align="left"
+                    >{{ transData.hash }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="InputId"
+                    label-align="left"
+                    align="left"
+                  >
+                    <el-button
+                      type="text"
+                      @click="getInputData(transData.inputId)"
+                      >{{ transData.inputId }}</el-button
+                    >
+                  </el-descriptions-item>
+                  <el-descriptions-item
+                    label="OutputId"
+                    label-align="left"
+                    align="left"
+                  >
+                    <el-button
+                      type="text"
+                      @click="getOutputData(transData.outputId)"
+                      >{{ transData.outputId }}</el-button
+                    >
+                  </el-descriptions-item>
+                  <el-descriptions-item
+                    label="createTime"
+                    label-align="left"
+                    align="left"
+                    >{{ transData.createTime }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="totalInput"
+                    label-align="left"
+                    align="left"
+                    >{{ transData.totalInput }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="totalOutput"
+                    label-align="left"
+                    align="left"
+                    >{{ transData.totalOutput }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="status"
+                    label-align="left"
+                    align="left"
+                    >{{ transData.status }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="utxo"
+                    label-align="left"
+                    align="left"
+                    >{{ transData.utxo }}</el-descriptions-item
+                  >
+                </el-descriptions></el-form
+              ></c-scrollbar
+            >
+          </el-dialog>
+        </div>
+        <div class="bs-sysMsg">
+          <span style="font-weight: bold"
+            ><span v-show="sysMesStates == false">区块和节点事件</span>
+            <el-input
+              v-show="sysMesStates == true"
+              size="small"
+              v-model="sysMesStatesContent"
+              style="width: 65%"
+              placeholder="输入想搜索的内容" />
+            <!-- <el-button
+                v-show="sysMesStates == false"
+                type="text"
+                size="small"
+                round
+                @click="sysMesStates = true"
+              > -->
+            <el-icon
+              v-show="sysMesStates == false"
+              @click="sysMesStates = true"
+              :size="20"
+              class="searchStartButton"
+            >
+              <Search />
+            </el-icon>
+            <!-- </el-button> -->
+            <el-button
+              v-show="sysMesStates == true"
+              type="text"
+              size="small"
+              round
+              @click="searTargetMesList"
+            >
+              搜索 </el-button
+            ><el-icon
+              v-show="sysMesStates == true"
+              @click="sysMesStates = false"
+              class="closebold"
+              ><CloseBold /></el-icon
+          ></span>
+          <el-collapse v-model="activeName" accordion>
+            <el-collapse-item name="1">
+              <template #title>
+                <el-carousel
+                  style="width: 100%"
+                  height="49px"
+                  direction="vertical"
+                  indicator-position="none"
+                  :autoplay="false"
+                  :interval="1000"
+                >
+                  <!-- <el-carousel-item v-for="item in systemMsgNode" :key="item.id">
+                    <span>{{ item.title }}</span>
+                  </el-carousel-item> -->
+                  <el-carousel-item>
+                    <span>点击查看节点消息</span>
+                  </el-carousel-item>
+                </el-carousel>
+                <!-- <span>点击查看节点消息</span> -->
+              </template>
+              <!-- <c-scrollbar maxHeight="100%" trigger="hover"> -->
+              <c-scrollbar maxHeight="280px" height="280px" trigger="hover">
+                <div v-for="item in nodeMesVisList" :key="item" class="event-content">
+                  <div class="event-mes-block-node">
+                    {{ item.mes }}
+                  </div>
+                  <!-- <el-icon :size="18" class="iconfont">
+                        <Edit />
+                      </el-icon> -->
+                  <div class="event-detail" @click="showNodeDetial(item)">
+                    <el-icon class="event-detail-buttom"
+                      ><MoreFilled
+                    /></el-icon>
+                  </div>
+                </div>
+              </c-scrollbar>
+            </el-collapse-item>
+            <el-collapse-item name="2">
+              <template #title>
+                <el-carousel
+                  style="width: 100%"
+                  height="49px"
+                  direction="vertical"
+                  indicator-position="none"
+                  :autoplay="true"
+                  :interval="1000"
+                >
+                  <!-- <el-carousel-item v-for="item in systemMsgBlock" :key="item.id">
+                    <span>{{ item.title }}</span>
+                  </el-carousel-item> -->
+                  <el-carousel-item>
+                    <span>点击查看区块消息</span>
+                  </el-carousel-item>
+                </el-carousel>
+                <!-- <span>点击查看区块消息</span> -->
+              </template>
+              <c-scrollbar maxHeight="280px" height="280px" trigger="hover">
+                <div v-for="item in blockMesVisList" :key="item" class="event-content">
+                  <div class="event-mes-block-node">
+                    {{ item.mes }}
+                  </div>
+                  <!-- <el-icon :size="18" class="iconfont">
+                        <Edit />
+                      </el-icon> -->
+                  <div class="event-detail" @click="showBlockDetial(item)">
+                    <el-icon class="event-detail-buttom"
+                      ><MoreFilled
+                    /></el-icon>
+                  </div>
+                </div>
+              </c-scrollbar>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+
+        <!-- 当前用户仿真数据获取 -->
+        <el-dialog v-model="simDataeVisible" title="仿真记录" width="40%">
+          <el-table :data="blockDataTableData" style="width: 100%">
+            <el-table-column prop="id" label="Id" width="60" />
+            <el-table-column prop="numOfNodes" label="NumOfNode" width="130" />
+            <el-table-column
+              prop="numOfBlocks"
+              label="NumOfBlock"
+              width="130"
+            />
+            <el-table-column prop="simEndTime" label="EndTime" width="200" />
+          </el-table>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="simDataeVisible = false">Cancel</el-button>
+              <!-- <el-button type="primary" @click="dialogNodeVisible = false"
+                >Confirm</el-button
+              > -->
+            </span>
+          </template>
+        </el-dialog>
+        <el-dialog v-model="dialogNodeVisible" title="详情" width="30%">
+          <el-form :model="nodeMesData">
+            <el-descriptions :column="1" border>
               <el-descriptions-item
-                label="wallet_id"
+                label="消息类型"
                 label-align="left"
                 align="left"
                 min-width="100px"
-                ><el-tag size="small">{{
-                  walletData.id
-                }}</el-tag></el-descriptions-item
+                >{{ nodeMesData.type }}</el-descriptions-item
               >
               <el-descriptions-item
-                label="publicKkey"
+                label="消息简略信息"
                 label-align="left"
                 align="left"
-                >{{ walletData.publicKkey }}</el-descriptions-item
+                min-width="100px"
+                >{{ nodeMesData.mes }}</el-descriptions-item
               >
               <el-descriptions-item
-                label="Address"
+                label="消息状态"
                 label-align="left"
                 align="left"
-                >{{ walletData.address }}</el-descriptions-item
+                min-width="100px"
+                >{{ nodeMesData.state }}</el-descriptions-item
               >
               <el-descriptions-item
-                label="privateKey"
+                label="消息发起节点"
                 label-align="left"
                 align="left"
+                min-width="100px"
+                >{{ nodeMesData.from }}</el-descriptions-item
               >
-                {{ walletData.privateKey }}
+              <el-descriptions-item
+                label="消息接收节点"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ nodeMesData.to }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="发生时间"
+                label-align="left"
+                align="left"
+                min-width="100px"
+              >
+                <el-date-picker
+                  v-model="nodeMesData.timestamp"
+                  size="large"
+                  type="datetime"
+                  placeholder="选择结束时间"
+                  :disabled="true"
+                />
               </el-descriptions-item>
-            </el-descriptions></el-form
-          ></c-scrollbar
-        >
-      </el-dialog>
-      <div class="reStarteSim">
-        <el-button type="primary" size="small" @click="reStartSim" plain>再次仿真</el-button>
-      </div>
-      <div class="simDataGet">
-        <el-button size="small" @click="simDataGetlist5" plain>仿真记录</el-button>
-      </div>
-      <div class="wholeSimTeamstamp" style="color: #916b0a">
-        <!-- <el-button
-          style="color: rgb(87, 75, 0)"
-          type="text"
-          v-model="simFlowTime"
-          disabled
-          @click="reStartSim"
-          >虚拟时间进度:{{ simFlowTime.timeString }}</el-button
-        > -->
-        <span>虚拟时间进度:</span
-        >
-        <el-date-picker
-          v-model="simFlowTime.timeData"
-          size="large"
-          type="datetime"
-          placeholder="选择结束时间"
-          :disabled="true"
-        />
-      </div>
-      <div class="wholeSimNodeMes" style="color: #916b0a">
-        <el-select
-          v-model="valueNode"
-          :disabled="valueNodeStatue"
-          filterable
-          placeholder="节点详情"
-          @change="optionsNodeChange"
-        >
-          <el-option
-            v-for="item in optionsNode"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </div>
-      <div class="bs-sysMsg-summary">
-        <span style="font-weight: bold">总览</span>
-        <el-collapse v-model="activeSumName" accordion>
-          <el-collapse-item name="1">
-            <template #title>
-              <el-carousel
-                style="width: 100%"
-                height="49px"
-                direction="vertical"
-                indicator-position="none"
-                :autoplay="true"
+              <el-descriptions-item
+                label="交易id"
+                label-align="left"
+                align="left"
+                min-width="100px"
               >
-                <!-- <el-carousel-item v-for="item in systemMsgBlock" :key="item.id">
-                <span>{{ item.title }}</span>
-              </el-carousel-item> -->
-                <el-carousel-item>
-                  <span>点击查看总览信息</span>
-                </el-carousel-item>
-              </el-carousel>
-            </template>
-            <el-scrollbar height="280px">
-              <div class="summary-content">
-                <div v-for="o in summaryMes">
-                  {{ o.tabName + o.data }}
-                </div>
+                <el-button
+                  type="text"
+                  @click="findDetailTrans(nodeMesData.transactionId)"
+                  >{{ nodeMesData.transactionId }}</el-button
+                >
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogNodeVisible = false">Cancel</el-button>
+              <!-- <el-button type="primary" @click="dialogNodeVisible = false"
+                >Confirm</el-button
+              > -->
+            </span>
+          </template>
+        </el-dialog>
+        <el-dialog v-model="dialogBlockVisible" title="详情" width="50%">
+          <el-form :model="blockMesData">
+            <el-descriptions :column="2" border>
+              <el-descriptions-item
+                label="消息类型"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.type }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="消息简略信息"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.mes }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="消息状态"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.state }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="消息发起节点"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.from }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="消息接收节点"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.to }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="消息传输时间"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.tradeTime }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="传输区块ID"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.blockId }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="传输区块HASH"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.blockHash }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="当前区块高度"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ blockMesData.blockHeight }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="发生时间"
+                label-align="left"
+                align="left"
+                min-width="100px"
+              >
+                <el-date-picker
+                  v-model="blockMesData.timestamp"
+                  size="large"
+                  type="datetime"
+                  placeholder="选择结束时间"
+                  :disabled="true"
+                />
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogBlockVisible = false">Cancel</el-button>
+              <!-- <el-button type="primary" @click="dialogBlockVisible = false"
+                >Confirm</el-button
+              > -->
+            </span>
+          </template>
+        </el-dialog>
+        <el-dialog v-model="dialogCreateVisible" title="详情" width="30%">
+          <el-form :model="createMesData">
+            <el-descriptions :column="1" border>
+              <el-descriptions-item
+                label="消息类型"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ createMesData.type }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="消息简略信息"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ createMesData.mes }}</el-descriptions-item
+              >
+
+              <el-descriptions-item
+                label="矿工节点"
+                label-align="left"
+                align="left"
+                min-width="100px"
+                >{{ createMesData.miner }}</el-descriptions-item
+              >
+              <el-descriptions-item
+                label="发生时间"
+                label-align="left"
+                align="left"
+                min-width="100px"
+              >
+                <el-date-picker
+                  v-model="createMesData.timestamp"
+                  size="large"
+                  type="datetime"
+                  placeholder="选择结束时间"
+                  :disabled="true"
+                />
+              </el-descriptions-item>
+              <el-descriptions-item
+                label="挖矿奖励交易"
+                label-align="left"
+                align="left"
+                min-width="100px"
+              >
+                <el-button
+                  type="text"
+                  @click="findDetailTrans(createMesData.minerReward)"
+                  >{{ createMesData.minerReward }}</el-button
+                >
+              </el-descriptions-item>
+              <el-descriptions-item
+                label="是否分叉块"
+                label-align="left"
+                align="left"
+                min-width="100px"
+              >
+                {{ createMesData.isOrphan }}
+              </el-descriptions-item>
+              <el-descriptions-item
+                label="认证交易列表"
+                label-align="left"
+                align="left"
+                min-width="100px"
+              >
+                <el-button
+                  type="text"
+                  @click="findDetailTrans(createMesData.transactionId)"
+                  >{{ createMesData.transactionId }}</el-button
+                >
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogCreateVisible = false">Cancel</el-button>
+              <!-- <el-button type="primary" @click="dialogBlockVisible = false"
+                >Confirm</el-button
+              > -->
+            </span>
+          </template>
+        </el-dialog>
+        <el-dialog
+          v-model="dialogNodeDetailVisible"
+          title="节点详情"
+          width="50%"
+        >
+          <el-form :model="dodeDetailMesData">
+            <div
+              style="
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+              "
+            >
+              <div class="nodeDetail1">
+                <el-descriptions :column="1" border title="节点详情">
+                  <el-descriptions-item
+                    label="节点ID"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    >{{ dodeDetailMesData.addressId }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="节点类型"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    >{{ dodeDetailMesData.nodeType }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="节点地域"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    v-model="regionData"
+                    >{{
+                      regionData[dodeDetailMesData.regionId]
+                    }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    v-if="dodeDetailMesData.nodeType == `miningNode`"
+                    label="节点算力"
+                    label-align="center"
+                    align="center"
+                    >{{ dodeDetailMesData.hashRate }} kH/s</el-descriptions-item
+                  >
+                </el-descriptions>
               </div>
-            </el-scrollbar>
-          </el-collapse-item>
-        </el-collapse>
-      </div>
-      <el-dialog
+              <div class="nodeDetail1Account">
+                <el-descriptions :column="2" border title="账户详情">
+                  <el-descriptions-item
+                    label="账户ID"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    >{{
+                      dodeDetailMesData.accountList.accountId
+                    }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="Transactions"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    >{{
+                      dodeDetailMesData.accountList.transactions
+                    }}</el-descriptions-item
+                  >
+                  <el-descriptions-item
+                    label="Total Received"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    >{{
+                      dodeDetailMesData.accountList.totalReceived
+                    }}</el-descriptions-item
+                  ><el-descriptions-item
+                    label="Total Sent"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    >{{
+                      dodeDetailMesData.accountList.totalSent
+                    }}</el-descriptions-item
+                  ><el-descriptions-item
+                    label="Final Balance"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    >{{
+                      dodeDetailMesData.accountList.balance
+                    }}</el-descriptions-item
+                  ><el-descriptions-item
+                    label="Wallet Id"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    >{{ dodeDetailMesData.accountList.walletId.walletId
+                    }}<el-button
+                      type="text"
+                      @click="
+                        checkWallet(
+                          dodeDetailMesData.accountList.walletId,
+                          dodeDetailMesData.accountList.address
+                        )
+                      "
+                      >查看</el-button
+                    ></el-descriptions-item
+                  ><el-descriptions-item
+                    label="交易列表ID"
+                    label-align="left"
+                    align="left"
+                    min-width="100px"
+                    ><div
+                      v-if="dodeDetailMesData.accountList.transactionsId != ``"
+                    >
+                      <el-tooltip
+                        v-if="dodeDetailMesData.nodeType == `lightNode`"
+                        content="轻节点内账户的交易信息需要通过其他全节点查询!"
+                        placement="top"
+                        ><el-button
+                          size="small"
+                          @click="
+                            findDetailTrans(
+                              dodeDetailMesData.accountList.transactionsId
+                            )
+                          "
+                          round
+                          >查询交易
+                        </el-button>
+                      </el-tooltip>
+                    </div>
+                    <el-button
+                      v-if="dodeDetailMesData.nodeType != `lightNode`"
+                      type="text"
+                      @click="
+                        findDetailTrans(
+                          dodeDetailMesData.accountList.transactionsId
+                        )
+                      "
+                      >{{
+                        dodeDetailMesData.accountList.transactionsId
+                      }}</el-button
+                    ></el-descriptions-item
+                  >
+                </el-descriptions>
+              </div>
+            </div>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogNodeDetailVisible = false"
+                >Cancel</el-button
+              >
+              <!-- <el-button type="primary" @click="dialogBlockVisible = false"
+                >Confirm</el-button
+              > -->
+            </span>
+          </template>
+        </el-dialog>
+        <el-dialog v-model="dialogWalletVisible" width="440px">
+          <c-scrollbar maxWidth="400" trigger="hover">
+            <el-form :model="walletData">
+              <el-descriptions title="钱包结构信息" :column="1" border>
+                <el-descriptions-item
+                  label="wallet_id"
+                  label-align="left"
+                  align="left"
+                  min-width="100px"
+                  ><el-tag size="small">{{
+                    walletData.id
+                  }}</el-tag></el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="publicKkey"
+                  label-align="left"
+                  align="left"
+                  >{{ walletData.publicKkey }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="Address"
+                  label-align="left"
+                  align="left"
+                  >{{ walletData.address }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="privateKey"
+                  label-align="left"
+                  align="left"
+                >
+                  {{ walletData.privateKey }}
+                </el-descriptions-item>
+              </el-descriptions></el-form
+            ></c-scrollbar
+          >
+        </el-dialog>
+        <div class="reStarteSim">
+          <el-button type="primary" @click="reStartSim" plain
+            >再次仿真</el-button
+          >
+        </div>
+        <div class="simDataGet">
+          <el-button @click="simDataGetlist5" plain>仿真记录</el-button>
+        </div>
+        <div class="wholeSimTeamstamp" style="color: #916b0a">
+          <!-- <el-button
+              style="color: rgb(87, 75, 0)"
+              type="text"
+              v-model="simFlowTime"
+              disabled
+              @click="reStartSim"
+              >虚拟时间进度:{{ simFlowTime.timeString }}</el-button
+            > -->
+          <span>虚拟时间进度:</span
+          ><el-date-picker
+            v-model="simFlowTime.timeData"
+            size="large"
+            type="datetime"
+            placeholder="选择结束时间"
+            :disabled="true"
+          />
+        </div>
+        <div class="wholeSimNodeMes" style="color: #916b0a">
+          <el-select
+            v-model="valueNode"
+            :disabled="valueNodeStatue"
+            filterable
+            placeholder="节点详情"
+            @change="optionsNodeChange"
+          >
+            <el-option
+              v-for="item in optionsNode"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
+        <div class="bs-sysMsg-summary">
+          <span style="font-weight: bold">总览</span>
+          <el-collapse v-model="activeSumName" accordion>
+            <el-collapse-item name="1">
+              <template #title>
+                <el-carousel
+                  style="width: 100%"
+                  height="49px"
+                  direction="vertical"
+                  indicator-position="none"
+                  :autoplay="true"
+                >
+                  <!-- <el-carousel-item v-for="item in systemMsgBlock" :key="item.id">
+                    <span>{{ item.title }}</span>
+                  </el-carousel-item> -->
+                  <el-carousel-item>
+                    <span>点击查看总览信息</span>
+                  </el-carousel-item>
+                </el-carousel>
+              </template>
+              <el-scrollbar height="280px">
+                <div class="summary-content">
+                  <div v-for="o in summaryMes" :key="o">
+                    {{ o.tabName + o.data }}
+                  </div>
+                </div>
+              </el-scrollbar>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+        <el-dialog
           v-model="dialogWholeSimVisible"
           :title="t('teamSimDataConfig')"
           width="76%"
@@ -1548,128 +1558,127 @@
             </span>
           </template>
         </el-dialog>
-      <el-dialog
-        v-model="dialogWholeLatencyVisible"
-        title="地区延迟列表配置"
-        width="63%"
-        :close-on-click-modal="false"
-        center
-      >
-        <el-table :data="WholeSimData.regionLatency" style="width: 100%">
-          <el-table-column label="地区" width="70">
-            <template #default="scope">
-              <div style="display: flex; align-items: center">
-                <span style="font-weight: bold; color: #909399">{{
-                  scope.row.name
-                }}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="NA" width="130">
-            <template #default="scope">
-              <el-input-number
-                style="width: 100%"
-                v-model="scope.row.latency[0]"
-                :min="1"
-                :step="10"
-                size="small"
-                controls-position="right"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="EU" width="130">
-            <template #default="scope">
-              <el-input-number
-                style="width: 100%"
-                v-model="scope.row.latency[1]"
-                :min="1"
-                :step="10"
-                size="small"
-                controls-position="right"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="SA" width="130">
-            <template #default="scope">
-              <el-input-number
-                style="width: 100%"
-                v-model="scope.row.latency[2]"
-                :min="1"
-                :step="10"
-                size="small"
-                controls-position="right"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="AS" width="130">
-            <template #default="scope">
-              <el-input-number
-                style="width: 100%"
-                v-model="scope.row.latency[3]"
-                :min="1"
-                :step="10"
-                size="small"
-                controls-position="right"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="AF" width="130">
-            <template #default="scope">
-              <el-input-number
-                style="width: 100%"
-                v-model="scope.row.latency[4]"
-                :min="1"
-                :step="10"
-                size="small"
-                controls-position="right"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="OA" width="130">
-            <template #default="scope">
-              <el-input-number
-                style="width: 100%"
-                v-model="scope.row.latency[5]"
-                :min="1"
-                :step="10"
-                size="small"
-                controls-position="right"
-              />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-dialog>
-    </el-col>
-  </el-row>
+        <el-dialog
+          v-model="dialogWholeLatencyVisible"
+          title="地区延迟列表配置"
+          width="63%"
+          :close-on-click-modal="false"
+          center
+        >
+          <el-table :data="WholeSimData.regionLatency" style="width: 100%">
+            <el-table-column label="地区" width="70">
+              <template #default="scope">
+                <div style="display: flex; align-items: center">
+                  <span style="font-weight: bold; color: #909399">{{
+                    scope.row.name
+                  }}</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="NA" width="130">
+              <template #default="scope">
+                <el-input-number
+                  style="width: 100%"
+                  v-model="scope.row.latency[0]"
+                  :min="1"
+                  :step="10"
+                  size="small"
+                  controls-position="right"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column label="EU" width="130">
+              <template #default="scope">
+                <el-input-number
+                  style="width: 100%"
+                  v-model="scope.row.latency[1]"
+                  :min="1"
+                  :step="10"
+                  size="small"
+                  controls-position="right"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column label="SA" width="130">
+              <template #default="scope">
+                <el-input-number
+                  style="width: 100%"
+                  v-model="scope.row.latency[2]"
+                  :min="1"
+                  :step="10"
+                  size="small"
+                  controls-position="right"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column label="AS" width="130">
+              <template #default="scope">
+                <el-input-number
+                  style="width: 100%"
+                  v-model="scope.row.latency[3]"
+                  :min="1"
+                  :step="10"
+                  size="small"
+                  controls-position="right"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column label="AF" width="130">
+              <template #default="scope">
+                <el-input-number
+                  style="width: 100%"
+                  v-model="scope.row.latency[4]"
+                  :min="1"
+                  :step="10"
+                  size="small"
+                  controls-position="right"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column label="OA" width="130">
+              <template #default="scope">
+                <el-input-number
+                  style="width: 100%"
+                  v-model="scope.row.latency[5]"
+                  :min="1"
+                  :step="10"
+                  size="small"
+                  controls-position="right"
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-dialog>
+      </el-col>
+    </el-row>
+    <div
+      v-loading="boxLoading"
+      :element-loading-text="loadingValue"
+      :element-loading-spinner="svg"
+      element-loading-svg-view-box="-10, -10, 50, 50"
+      element-loading-background="rgba(122, 122, 122, 0.8)"
+      style="width: 100%"
+      class="map-content"
+    >
+      <!-- <el-button @click="redrsad">ssadadada</el-button> -->
 
+      <div id="china-map" style="width: 100%; height: 100%"></div>
+    </div>
+  </div>
   <!-- <div class="wholeSimSlider">
-    <el-slider
-      :max="maxSloderValue"
-      class="sliderbox"
-      v-model="wholeSimSliderValue"
-    />
-  </div> -->
-  <div
-    v-loading="boxLoading"
-    :element-loading-text="loadingValue"
-    :element-loading-spinner="svg"
-    element-loading-svg-view-box="-10, -10, 50, 50"
-    element-loading-background="rgba(122, 122, 122, 0.8)"
-    style="width: 100%"
-    class="map-content"
-  >
-    <!-- <el-button @click="redrsad">ssadadada</el-button> -->
-
-    <div id="china-map" style="width: 100%; height: 100%"></div>
-  </div>
-  </div>
+      <el-slider
+        :max="maxSloderValue"
+        class="sliderbox"
+        v-model="wholeSimSliderValue"
+      />
+    </div> -->
 </template>
 
 <script>
 import * as echarts from "echarts";
 import JSONMAP from "../assets/mapRow/world.json";
 import { useI18n } from "vue-i18n";
-import { 
+import {
   Edit,
   MoreFilled,
   View,
@@ -1694,11 +1703,12 @@ import { getTargetDataStr, getDataString, getSign } from "../utils/utils";
 
 import {
   configWholeSettingData,
-  configWholeSettingBigData,
-  configWholeNodeData,
+  configWholeNodeDataTeam,
   configWholeSettingEndData,
   configWholeBlockMes,
   getConfigSimData,
+  getUserisOnSimState,
+  getUserTeamSimAgain
 } from "../api/apis";
 // import * as  bitcoin from 'bitcoinjs-lib';
 import { nodeCreated } from "../wholesim/wholeNode";
@@ -1849,25 +1859,25 @@ export default {
     });
     let WholeSimData = reactive({
       numOfNodes: 100,
-      numOfMaxOutBound: 8,
-      averageMiningPower: 400000,
+      numOfMaxOutBound: 4,
+      averageMiningPower: 40000,
       regionList: {
-        na: 0.3316,
-        eu: 0.4998,
-        sa: 0.0090,
-        as: 0.1177,
-        af: 0.0224,
-        oa: 0.0195,
+        na: 0.3012,
+        eu: 0.555,
+        sa: 0.015,
+        as: 0.1025,
+        af: 0.0047,
+        oa: 0.0261,
       },
       defaultAccount: 1,
       neighborDiscoveryInterval: 100,
       nodeChurnRate: 0.976,
       simEndTime: new Date(2023, 10, 10, 10, 10),
       simEndTimeString: "",
-      numOfEndBlock: 10,
+      numOfEndBlock: 100,
       numOfTransInblock: 10,
       consensusAlgorithm: "POW",
-      maxBlockSize: 1270000,
+      maxBlockSize: 1048000,
       blockTime: 10000,
       blockReward: 12,
       transRePer: 0.001,
@@ -1882,7 +1892,7 @@ export default {
       wholeUploadBandwidth: {
         na: 34000000,
         eu: 53800000,
-        sa: 11300000,
+        sa: 11300000, 
         as: 32400000,
         af: 5400000,
         oa: 11400000,
@@ -1961,7 +1971,7 @@ export default {
       blocMeskList = [];
       let time = (WholeSimData.numOfNodes / 100) * 1000 + 1000;
       //节点数据导入迁移到仿真结束或者异常中值终止
-      // configWholeNodeData({
+      // configWholeNodeDataTeam({
       //   wholeNodeType: nodeMesList,
       //   auth: getAuth(),
       //   wholeSimIds: wholeSimId,
@@ -2001,11 +2011,9 @@ export default {
             let asd = JSON.stringify(noHeapBlockMesList);
             let sdsd = {
               // wholeBlockMesTypes: noHeapBlockMesListss,
-              wholeBlockMesTypes: null,
               auth: getAuth(),
               wholeSimIds: wholeSimId,
               noHeapBlockMesList: null,
-              // noHeapBlockMesList: noHeapBlockMesList,
             };
             configWholeBlockMes(sdsd).then((resblock) => {
               if (resblock.status == 1) {
@@ -2084,92 +2092,46 @@ export default {
     //直接获取仿真结果
     const nextEnd = () => {
       dialogWholeSimVisible.value = false;
-      let loading = openFullScreen("加载中...");
       reSetSimEndTimeStr(getTargetDataStr(WholeSimData.simEndTime));
       let data = {
         wholeSimDataInput: JSON.parse(JSON.stringify(WholeSimData)),
         auth: getAuth(),
+        id:getAuthId()
       };
       //基本数据导入
-      if(this.isOpenBigSimList){
-        configWholeSettingBigData(data).then((res) => {
-          console.log("速度仿真开始");
-          // 创建结束后开始仿真;
-          if (res.status == 1) {
-            simDataId = res.wholeSimId;
-            simState.value = true;
-            
-            // startWholeSim(res.wholeSimId, 1); // 1表示不实时显示仿真流程
-          } else {
-            ElMessageBox.alert("等待后端仿真结束", "ALERT", {
-              // if you want to disable its autofocus
-              // autofocus: false,
-              confirmButtonText: "OK",
-            });
-          }
-          setTimeout(() => {
-              loading.close();
-            }, 1000);
-        });
-      }else{
-        configWholeSettingData(data).then((res) => {
-          // 创建结束后开始仿真;
-          if (res.status == 1) {
-            simDataId = res.wholeSimId;
-            simState.value = true;
-            loading.close();
-            startWholeSim(res.wholeSimId, 1); // 1表示不实时显示仿真流程
-          } else {
-            ElMessageBox.alert("一些错误：" + res.mes, "ALERT", {
-              // if you want to disable its autofocus
-              // autofocus: false,
-              confirmButtonText: "OK",
-            });
-          }
-        });
-      }
-      
+      configWholeSettingData(data).then((res) => {
+        // 创建结束后开始仿真;
+        if (res.status == 1) {
+          simDataId = res.wholeSimId;
+          simState.value = true;
+          startWholeSim(res.wholeSimId, 1); // 1表示不实时显示仿真流程
+        } else {
+          ElMessageBox.alert("一些错误：" + res.mes, "ALERT", {
+            // if you want to disable its autofocus
+            // autofocus: false,
+            confirmButtonText: "OK",
+          });
+        }
+      });
     };
     //下一步
     const next = () => {
       if (activeIndex.value == 4) {
         let j = WholeSimData;
         dialogWholeSimVisible.value = false;
-        let loading = openFullScreen("加载中...");
         reSetSimEndTimeStr(getTargetDataStr(WholeSimData.simEndTime));
         let data = {
           wholeSimDataInput: JSON.parse(JSON.stringify(WholeSimData)),
           auth: getAuth(),
+          id:getAuthId()
         };
         //基本数据导入
-        if(this.isOpenBigSimList){
-        configWholeSettingBigData(data).then((res) => {
-          console.log("速度仿真开始");
-          // 创建结束后开始仿真;
-          if (res.status == 1) {
-            simDataId = res.wholeSimId;
-            simState.value = true;
-            
-            // startWholeSim(res.wholeSimId, 1); // 1表示不实时显示仿真流程
-          } else {
-            ElMessageBox.alert("等待后端仿真结束" , "消息", {
-              // if you want to disable its autofocus
-              // autofocus: false,
-              confirmButtonText: "OK",
-            });
-          }
-          setTimeout(() => {
-              loading.close();
-            }, 1000);
-        });
-      }else{
         configWholeSettingData(data).then((res) => {
           // 创建结束后开始仿真;
           if (res.status == 1) {
             simDataId = res.wholeSimId;
             simState.value = true;
-            loading.close();
-            startWholeSim(res.wholeSimId, 1); // 1表示不实时显示仿真流程
+            // startWholeSim(res.wholeSimId, 0); //0表示实时显示仿真流程
           } else {
             ElMessageBox.alert("一些错误：" + res.mes, "ALERT", {
               // if you want to disable its autofocus
@@ -2178,7 +2140,6 @@ export default {
             });
           }
         });
-      }
         // this.redrsad();
       } else {
         if (activeIndex.value == 2 && WholeSimData.simEndTime == "") {
@@ -2277,7 +2238,6 @@ export default {
       isOrphan: "false",
       minerReward: "",
       timestamp: "",
-      blockDif:0
     });
     let nodeMesData = reactive({
       type: "0",
@@ -2571,12 +2531,10 @@ export default {
           },
         },
       ]),
-      dialogSearchDataVisible: ref(false),
-      isOpenBigSimList: ref(false),//是否打开大量级别仿真通道
       teamSimUserList: ref([
         {
           id:1,
-          userName: "orrsrosx(A/L)",
+          userName: "orrsrosx(Admin)",
           staus: 1,//1在线，0不在线
           mes: "区块创建",//最新行为消息
         },
@@ -2617,6 +2575,7 @@ export default {
           mes: "节点消息创建",
         }
       ]),
+      dialogSearchDataVisible: ref(false),
     };
   },
   setup() {
@@ -2714,8 +2673,6 @@ export default {
         mes.contentMessage.type == "blockCreated" ||
         mes.contentMessage.type == "normalMes"
       ) {
-        this.createMesData.type = mes.contentMessage.type;
-        this.createMesData.blockDif = parseInt(mes.contentMessage.blockDif);
         this.createMesData.mes = mes.mes;
         this.createMesData.isOrphan = mes.contentMessage.isOrphan;
         this.createMesData.timestamp = new Date(mes.contentMessage.timestamp);
@@ -2759,8 +2716,6 @@ export default {
         mes.contentMessage.type == "blockCreated" ||
         mes.contentMessage.type == "normalMes"
       ) {
-        this.createMesData.type = mes.contentMessage.type;
-        this.createMesData.blockDif = parseInt(mes.contentMessage.blockDif);
         this.createMesData.mes = mes.mes;
         this.createMesData.isOrphan = mes.contentMessage.isOrphan;
         this.createMesData.timestamp = new Date(mes.contentMessage.timestamp);
@@ -3076,7 +3031,7 @@ export default {
           map: "world",
           type: "map",
           mapType: "world",
-          roam: false,//是否可以移动
+          roam: false,
           zoom: 1.2,
           label: {
             normal: {
@@ -3473,12 +3428,10 @@ export default {
           confirmId: confirmedId,
           timestamp: timestampMes,
           isOrphan: "false",
-          blockDif: mes.targetBlock.difficulty,
         };
         titleMesBlock.push({ id: titleMesBlock.length, content: "区块创建" });
         contentMesBlock.unshift({
           id: contentMesBlock.length,
-          type: mes.type,
           contentMessage: blockEndMes,
           mes:
             "区块" +
@@ -3557,12 +3510,10 @@ export default {
           confirmId: "",
           timestamp: timestampMes,
           isOrphan: "true",
-          blockDif: mes.targetBlock.difficulty
         };
         titleMesBlock.push({ id: titleMesBlock.length, content: "区块创建" });
         contentMesBlock.unshift({
           id: contentMesBlock.length,
-          type: mes.type,
           contentMessage: blockEndMes,
           mes:
             "区块" +
@@ -4539,7 +4490,7 @@ export default {
     simDataGetlist5() {
       let targetEnd = {
         wholeNodeType: null,
-        blockList:null ,
+        blockList: null,
         transactionList: null,
         inputList: null,
         outputList: null,
@@ -4547,20 +4498,19 @@ export default {
         wholeSimIds: 0,
       };
       getConfigSimData(targetEnd).then((resnode) => {
-          this.blockDataTableData.length=0;
-          if(resnode.length>0){
-            for(let i =0;i<resnode.length;i++){
-              this.blockDataTableData.push({
-                id:resnode[i].id,
-                numOfNodes:resnode[i].numOfNodes,
-                numOfBlocks:resnode[i].numOfBlocks,
-                simEndTime:resnode[i].simEndTime
-              })
-            }
+        this.blockDataTableData.length = 0;
+        if (resnode.length > 0) {
+          for (let i = 0; i < resnode.length; i++) {
+            this.blockDataTableData.push({
+              id: resnode[i].id,
+              numOfNodes: resnode[i].numOfNodes,
+              numOfBlocks: resnode[i].numOfBlocks,
+              simEndTime: resnode[i].simEndTime,
+            });
           }
-          this.simDataeVisible = true;
+        }
+        this.simDataeVisible = true;
       });
-      
     },
     setVmSimTimeChange(time) {
       let localTime = this.simFlowTime.startTimeData.getTime() + time;
@@ -4609,7 +4559,6 @@ export default {
           ) {
             let targetminer = mesList2[i].contentMessage.miner;
             if (targetminer.toLowerCase().indexOf(content) != -1) {
-              
               this.searchMesList.push(mesList2[i]);
             }
           } else {
@@ -4824,7 +4773,6 @@ export default {
   },
 };
 </script>
-
 
 <style>
 .leftUserControl {

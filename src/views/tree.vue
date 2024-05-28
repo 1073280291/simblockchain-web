@@ -28,7 +28,7 @@
         <!-- 在线用户 -->
         <div class="textBton" :model="userOnlineNum">
           {{ userOnlineNum }}
-          <span plain @click="openOnlineUser" class="onlineUst">详情</span>
+          <!-- <span plain @click="openOnlineUser" class="onlineUst">详情</span> -->
         </div>
       </el-card>
       <el-card v-if="authoritys == 1" class="box-cards">

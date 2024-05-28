@@ -7,12 +7,16 @@
       </template>
       <el-button v-for="item in datas" type="text">{{item}}</el-button>
     </el-popover>
+    <el-button type="text" icon="el-icon-download" @click="handleDownload">模版下载</el-button>
   </div>
 </el-form>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
+ const handleDownload = () =>{
+    window.location.href = '../../../assets/blockchain.json'
+ }
 const getOutputData  = (val) => {
   let a  = val.split(",");
   datas.length = 0;

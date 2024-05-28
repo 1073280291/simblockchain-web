@@ -1585,6 +1585,7 @@ import { getTargetDataStr, getDataString, getSign } from "../utils/utils";
 
 import {
   configWholeSettingData,
+  configWholeSettingBigData,
   configWholeNodeData,
   configWholeSettingEndData,
   configWholeBlockMes,
@@ -1731,15 +1732,15 @@ export default {
     });
     let WholeSimData = reactive({
       numOfNodes: 100,
-      numOfMaxOutBound: 4,
-      averageMiningPower: 40000,
+      numOfMaxOutBound: 8,
+      averageMiningPower: 400000,
       regionList: {
-        na: 0.3412,
-        eu: 0.4194,
-        sa: 0.0257,
-        as: 0.1861,
-        af: 0.006,
-        oa: 0.0216,
+        na: 0.3316,
+        eu: 0.4998,
+        sa: 0.0090,
+        as: 0.1177,
+        af: 0.0224,
+        oa: 0.0195,
       },
       defaultAccount: 1,
       neighborDiscoveryInterval: 100,
@@ -1749,34 +1750,34 @@ export default {
       numOfEndBlock: 10,
       numOfTransInblock: 10,
       consensusAlgorithm: "POW",
-      maxBlockSize: 535000,
+      maxBlockSize: 1270000,
       blockTime: 10000,
       blockReward: 12,
       transRePer: 0.001,
       wholeDownloadBandwidth: {
-        na: 52000000,
-        eu: 40000000,
-        sa: 18000000,
-        as: 22800000,
-        af: 22800000,
-        oa: 29900000,
+        na: 92000000,
+        eu: 104000000,
+        sa: 35000000,
+        as: 47000000,
+        af: 12000000,
+        oa: 30000000,
       },
       wholeUploadBandwidth: {
-        na: 19200000,
-        eu: 20700000,
-        sa: 5800000,
-        as: 15700000,
-        af: 10200000,
-        oa: 11300000,
+        na: 34000000,
+        eu: 53800000,
+        sa: 11300000,
+        as: 32400000,
+        af: 5400000,
+        oa: 11400000,
       },
-      transRegionalBandwidth: 8000000,
+      transRegionalBandwidth: 12000000,
       regionLatency: [
-        { name: "NA", latency: [221, 236, 246, 244, 234, 233] },
-        { name: "EU", latency: [234, 218, 245, 254, 254, 255] },
-        { name: "SA", latency: [242, 245, 243, 264, 232, 232] },
-        { name: "AS", latency: [234, 222, 212, 221, 232, 234] },
-        { name: "AF", latency: [212, 245, 234, 212, 217, 234] },
-        { name: "OA", latency: [267, 245, 254, +223, 223, 218] },
+        { name: "NA", latency: [26, 105, 159, 183, 181, 215] },
+        { name: "EU", latency: [105, 10, 215, 217, 194, 274] },
+        { name: "SA", latency: [159, 215, 33, 316, 292, 292] },
+        { name: "AS", latency: [183, 217, 316, 49, 302, 166] },
+        { name: "AF", latency: [181, 194, 292, 302, 50, 254] },
+        { name: "OA", latency: [215, 274, 292, 166, 254, 28] },
       ],
       churnNodeFailureRate: 0.27,
       orphanBlock: 0.05,
@@ -1882,10 +1883,12 @@ export default {
             );
             let asd = JSON.stringify(noHeapBlockMesList);
             let sdsd = {
-              wholeBlockMesTypes: noHeapBlockMesListss,
+              // wholeBlockMesTypes: noHeapBlockMesListss,
+              wholeBlockMesTypes: null,
               auth: getAuth(),
               wholeSimIds: wholeSimId,
-              noHeapBlockMesList: noHeapBlockMesList,
+              noHeapBlockMesList: null,
+              // noHeapBlockMesList: noHeapBlockMesList,
             };
             configWholeBlockMes(sdsd).then((resblock) => {
               if (resblock.status == 1) {
@@ -1971,21 +1974,44 @@ export default {
         auth: getAuth(),
       };
       //基本数据导入
-      configWholeSettingData(data).then((res) => {
-        // 创建结束后开始仿真;
-        if (res.status == 1) {
-          simDataId = res.wholeSimId;
-          simState.value = true;
-          loading.close();
-          startWholeSim(res.wholeSimId, 1); // 1表示不实时显示仿真流程
-        } else {
-          ElMessageBox.alert("一些错误：" + res.mes, "ALERT", {
-            // if you want to disable its autofocus
-            // autofocus: false,
-            confirmButtonText: "OK",
-          });
-        }
-      });
+      if(this.isOpenBigSimList){
+        configWholeSettingBigData(data).then((res) => {
+          console.log("速度仿真开始");
+          // 创建结束后开始仿真;
+          if (res.status == 1) {
+            simDataId = res.wholeSimId;
+            simState.value = true;
+            
+            // startWholeSim(res.wholeSimId, 1); // 1表示不实时显示仿真流程
+          } else {
+            ElMessageBox.alert("等待后端仿真结束", "ALERT", {
+              // if you want to disable its autofocus
+              // autofocus: false,
+              confirmButtonText: "OK",
+            });
+          }
+          setTimeout(() => {
+              loading.close();
+            }, 1000);
+        });
+      }else{
+        configWholeSettingData(data).then((res) => {
+          // 创建结束后开始仿真;
+          if (res.status == 1) {
+            simDataId = res.wholeSimId;
+            simState.value = true;
+            loading.close();
+            startWholeSim(res.wholeSimId, 0); // 1表示不实时显示仿真流程
+          } else {
+            ElMessageBox.alert("一些错误：" + res.mes, "ALERT", {
+              // if you want to disable its autofocus
+              // autofocus: false,
+              confirmButtonText: "OK",
+            });
+          }
+        });
+      }
+      
     };
     //下一步
     const next = () => {
@@ -1999,13 +2025,34 @@ export default {
           auth: getAuth(),
         };
         //基本数据导入
+        if(this.isOpenBigSimList){
+        configWholeSettingBigData(data).then((res) => {
+          console.log("速度仿真开始");
+          // 创建结束后开始仿真;
+          if (res.status == 1) {
+            simDataId = res.wholeSimId;
+            simState.value = true;
+            
+            // startWholeSim(res.wholeSimId, 1); // 1表示不实时显示仿真流程
+          } else {
+            ElMessageBox.alert("等待后端仿真结束" , "消息", {
+              // if you want to disable its autofocus
+              // autofocus: false,
+              confirmButtonText: "OK",
+            });
+          }
+          setTimeout(() => {
+              loading.close();
+            }, 1000);
+        });
+      }else{
         configWholeSettingData(data).then((res) => {
           // 创建结束后开始仿真;
           if (res.status == 1) {
             simDataId = res.wholeSimId;
             simState.value = true;
             loading.close();
-            startWholeSim(res.wholeSimId, 0); //0表示实时显示仿真流程
+            startWholeSim(res.wholeSimId, 0); // 1表示不实时显示仿真流程
           } else {
             ElMessageBox.alert("一些错误：" + res.mes, "ALERT", {
               // if you want to disable its autofocus
@@ -2014,6 +2061,7 @@ export default {
             });
           }
         });
+      }
         // this.redrsad();
       } else {
         if (activeIndex.value == 2 && WholeSimData.simEndTime == "") {
@@ -2402,6 +2450,7 @@ export default {
         },
       ]),
       dialogSearchDataVisible: ref(false),
+      isOpenBigSimList: ref(false),//是否打开大量级别仿真通道
     };
   },
   setup() {

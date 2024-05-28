@@ -487,8 +487,8 @@ export default {
   background-color: rgb(120, 147, 173);
   position: relative;
   #bgd {
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
     background-image: url(../assets/blockchain.png);
     // background-repeat: no-repeat;

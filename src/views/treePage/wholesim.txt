@@ -1,97 +1,4 @@
 <template>
-<div class="leftUserControl">
-    仿真用户列表
-    <el-tooltip
-      class="box-item"
-      effect="dark"
-      content="刷新用户状态"
-      placement="top-start"
-    >
-      <el-icon @click="refreshUserStatus()" :size="20" class="iconUtils"
-        ><Refresh
-      /></el-icon>
-    </el-tooltip>
-    <div class="simUserList">
-
-      <div v-for="item in teamSimUserList" class="targetSimUser" :key="item">
-        <div class="textTop-team">
-          <div class="textTop-team-left"><el-icon v-if="item.staus==1" color="#26f545" :size="20" class="buttonUserIcon"
-          ><UserFilled 
-          /></el-icon>
-          <el-icon v-if="item.staus==0" color="#8f8f8f" :size="20" class="buttonUserIcon"
-          ><UserFilled 
-          /></el-icon>
-          </div>
-          <div class="textTop-team-right">{{item.userName}}
-            <div class="detail-team-mes">
-              <el-icon v-if="item.staus==0" color="#9dbeae" :size="20" class="buttonUserIcon"
-              ><More
-              /></el-icon>
-              <el-icon v-if="item.staus==1" @click="getUserDetailMes()" color="#26f545" :size="20" class="buttonUserIcon"
-              ><More
-              /></el-icon>
-            </div>
-            <div class="detail-team-del">
-              <el-icon :size="17" class="buttonUserIcon" @click="deleteTeamSimUser(item.id,item.userName)"
-              ><Delete
-              /></el-icon>
-            </div>
-          </div>
-        </div>
-        <div class="textBton-team" :model="item">最近消息：{{ item.mes }}</div>
-      </div>
-    </div>
-
-    <div class="teamSimUserReq">
-      <span class="teamSimUserReqText" @click="findUserReuList()">仿真申请列表</span>
-    </div>
-  </div>
-  <el-dialog v-model="simReqDataeVisible" title="仿真申请信息" width="38%">
-          <el-table :data="blockSimReqTableData" style="width: 100%">
-            <el-table-column prop="id" label="Id" width="60" />
-            <el-table-column prop="userName" label="UserName" width="130" />
-            <el-table-column prop="userStatue" label="UserStatue" width="130" />
-            <el-table-column label="Operations" width="180">
-              <template #default="scope">
-                <el-button size="small" @click="teamSimReqAccept(scope.$index,scope.row.id,scope.row.userName)"
-                  >Accpet</el-button
-                >
-                <el-button
-                  size="small"
-                  type="danger"
-                  @click="teamSimReqReject(scope.$index,scope.row.id,scope.row.userName)"
-                  >Reject</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="simReqDataeVisible = false">Cancel</el-button>
-            </span>
-          </template>
-        </el-dialog>
-        <el-dialog v-model="simDataUserListVisible" title="仿真记录" width="30%">
-          <el-table :data="blockSimUserTableData" style="width: 100%">
-            <el-table-column prop="id" label="SimID
-              " width="60" />
-            <el-table-column prop="userName" label="UserName" width="130" />
-            <el-table-column prop="userStatue" label="UserStatue" width="130" />
-            <el-table-column label="Operations" width="140">
-              <template #default="scope">
-                <el-button size="small" @click="teamSimAgain(scope.row.id,scope.row.userName)"
-                  >继续仿真</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="simDataUserListVisible = false">Cancel</el-button>
-            </span>
-          </template>
-        </el-dialog>
-  <div class="rightMapControl">
   <el-row>
     <el-col :span="24">
       <el-dialog
@@ -1042,512 +949,509 @@
         </el-collapse>
       </div>
       <el-dialog
-          v-model="dialogWholeSimVisible"
-          :title="t('teamSimDataConfig')"
-          width="76%"
-          :close-on-click-modal="false"
-          center
-        >
-          <el-card>
-            <el-steps
-              style="display: flex; justify-content: center"
-              :space="200"
-              :active="activeIndex - 0"
-              align-center
-              finish-status="success"
-            >
-              <el-step title="基本信息"></el-step>
-              <el-step title="节点配置"></el-step>
-              <el-step title="区块配置"></el-step>
-              <el-step title="网络配置"></el-step>
-              <el-step title="完成配置"></el-step>
-            </el-steps>
-            <div class="cardContent">
-              <div class="mesBox" v-show="activeIndex == 0">
-                <div v-show="activeIndex == 0">
-                  <h2>
-                    协作式仿真由仿真发起者进行全局仿真参数配置，仿真开始后该配置项内的相关参数将无法被修改。
-                  </h2>
+        v-model="dialogWholeSimVisible"
+        :title="t('WholeSimSeting')"
+        width="76%"
+        :close-on-click-modal="false"
+        center
+      >
+        <el-card>
+          <el-steps
+            style="display: flex; justify-content: center"
+            :space="200"
+            :active="activeIndex - 0"
+            align-center
+            finish-status="success"
+          >
+            <el-step title="基本信息"></el-step>
+            <el-step title="节点配置"></el-step>
+            <el-step title="区块配置"></el-step>
+            <el-step title="网络配置"></el-step>
+            <el-step title="完成配置"></el-step>
+          </el-steps>
+          <div class="cardContent">
+            <div class="mesBox" v-show="activeIndex == 0">
+              <div v-show="activeIndex == 0">
+                <h2>
+                  {{ t("wholeSimStartMes") }}
+                </h2>
 
-                  <div class="dataImport">
-                    <el-button type="primary" @click="findUserSimList" size="large">查看仿真记录</el-button>
-                  </div>
-                   <div class="dataImport">
-                    <el-button type="primary" @click="findaddUserSimList" size="large">在线加入仿真</el-button>
-                  </div>
-                </div>
-              </div>
-              <div class="mesBox" v-show="activeIndex == 4">
-                <div v-show="activeIndex == 4">
-                  <h2>
-                    配置完相关参数后点击创建，协作式仿真创建者会创建第初始仿真行为，后续有用户想要加入仿真需要对当前仿真进行申请，管理员通过申请即可加入该轮仿真。
-                  </h2>
-                  <div class="dataImport">
-                    <!-- <el-button type="primary" size="large">导入数据</el-button> -->
-                    <!-- <el-button type="primary" @click="nextEnd"
-                      >直接获取仿真结果</el-button
-                    > -->
-                  </div>
-                </div>
-              </div>
-              <div
-                class="cardSeting"
-                v-show="activeIndex != 0 && activeIndex != 4"
-              >
-                <div v-show="activeIndex == 1">
-                  <el-form
-                    :model="WholeSimData"
-                    class="demo-form-inline"
-                    label-width="120px"
-                  >
-                    <el-form-item label="初始节点数量">
-                      <el-input-number
-                        v-model="WholeSimData.numOfNodes"
-                        :min="100"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <el-form-item label="节点邻居度量数">
-                      <el-input-number
-                        v-model="WholeSimData.numOfMaxOutBound"
-                        :min="4"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <el-form-item label="矿工平均算力(kH/s)">
-                      <el-input-number
-                        v-model="WholeSimData.averageMiningPower"
-                        :min="2000"
-                        :step="1000"
-                        size="small"
-                      />
-                    </el-form-item>
-                  </el-form>
-                </div>
-                <div v-show="activeIndex == 2">
-                  <el-form
-                    :model="WholeSimData"
-                    class="demo-form-inline"
-                    label-width="160px"
-                  >
-                    <el-form-item label="初始化区块高度">
-                      <el-input-number
-                        v-model="WholeSimData.numOfEndBlock"
-                        :min="1"
-                        size="small"
-                        @change="
-                          (currentValue, oldValue) => {
-                            dateTimeChange(currentValue, oldValue, 0);
-                          }
-                        "
-                      />
-                    </el-form-item>
-                    <el-form-item label="区块内交易量级">
-                      <el-input-number
-                        v-model="WholeSimData.numOfTransInblock"
-                        :min="10"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <el-form-item label="共识算法">
-                      <el-select
-                        style="top: 2px; left: 0px; width: 120"
-                        v-model="WholeSimData.consensusAlgorithm"
-                        placeholder="共识算法选择"
-                        size="small"
-                      >
-                        <el-option
-                          v-for="item in optionsAlgorithm"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                          :disabled="item.disabled"
-                        />
-                      </el-select>
-                    </el-form-item>
-                    <el-form-item label="交易手续费占比">
-                      <el-input-number
-                        v-model="WholeSimData.transRePer"
-                        :min="0.001"
-                        :step="0.001"
-                        :max="1"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <!-- <el-form-item label="分叉率">
-                      <el-input-number
-                        v-model="WholeSimData.orphanBlock"
-                        :min="0.0001"
-                        :max="0.05"
-                        :step="0.0001"
-                        size="small"
-                      />
-                    </el-form-item> -->
-                  </el-form>
-                </div>
-                <div v-show="activeIndex == 3">
-                  <el-form
-                    :model="WholeSimData"
-                    class="demo-form-inline"
-                    label-width="160px"
-                  >
-                    <el-form-item
-                      label="网络上行带宽(kb/s)"
-                      style="margin-bottom: 10px"
-                    >
-                      <div>
-                        NA:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeUploadBandwidth.na"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                        EU:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeUploadBandwidth.eu"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                      </div>
-
-                      <div>
-                        SA:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeUploadBandwidth.sa"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                        AS:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeUploadBandwidth.as"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                      </div>
-                      <div>
-                        AF:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeUploadBandwidth.af"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                        OA:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeUploadBandwidth.oa"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                      </div>
-                    </el-form-item>
-                    <el-form-item label="网络下行带宽(kb/s)">
-                      <div>
-                        NA:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeDownloadBandwidth.na"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                        EU:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeDownloadBandwidth.eu"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                      </div>
-
-                      <div>
-                        SA:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeDownloadBandwidth.sa"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                        AS:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeDownloadBandwidth.as"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                      </div>
-                      <div>
-                        AF:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeDownloadBandwidth.af"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                        OA:
-                        <el-input-number
-                          style="width: 35%"
-                          v-model="WholeSimData.wholeDownloadBandwidth.oa"
-                          :min="10"
-                          size="small"
-                          controls-position="right"
-                        />
-                      </div>
-                    </el-form-item>
-                  </el-form>
-                </div>
-              </div>
-              <div
-                class="cardSeting2"
-                v-show="activeIndex != 0 && activeIndex != 4"
-              >
-                <div v-show="activeIndex == 1">
-                  <el-form
-                    :model="WholeSimData"
-                    class="demo-form-inline"
-                    label-width="160px"
-                  >
-                    <!-- <el-form-item label="节点默认账户量">
-                    <el-input-number
-                      v-model="WholeSimData.defaultAccount"
-                      :min="1"
-                      :max="10"
-                      size="small"
-                    />
-                  </el-form-item> -->
-
-                    <!-- <el-form-item label="邻居节点发现间隔(ms)">
-                      <el-input-number
-                        v-model="WholeSimData.neighborDiscoveryInterval"
-                        :min="100"
-                        :step="10"
-                        :max="10000"
-                        size="small"
-                      />
-                    </el-form-item> -->
-                    <el-form-item label="节点地域分布">
-                      <el-tooltip
-                        :content="`NA: ` + WholeSimData.regionList.na"
-                        placement="top"
-                        effect="light"
-                      >
-                        <el-tag class="ml-2" type="success">NA</el-tag>
-                      </el-tooltip>
-                      <el-tooltip
-                        :content="`EU: ` + WholeSimData.regionList.eu"
-                        placement="top"
-                        effect="light"
-                      >
-                        <el-tag class="ml-2" type="success"
-                          >EU</el-tag
-                        > </el-tooltip
-                      ><el-tooltip
-                        :content="`SA: ` + WholeSimData.regionList.sa"
-                        placement="top"
-                        effect="light"
-                      >
-                        <el-tag class="ml-2" type="success"
-                          >SA</el-tag
-                        > </el-tooltip
-                      ><el-tooltip
-                        :content="`AS: ` + WholeSimData.regionList.as"
-                        placement="top"
-                        effect="light"
-                      >
-                        <el-tag class="ml-2" type="success"
-                          >AS</el-tag
-                        > </el-tooltip
-                      ><el-tooltip
-                        :content="`AF: ` + WholeSimData.regionList.af"
-                        placement="top"
-                        effect="light"
-                      >
-                        <el-tag class="ml-2" type="success"
-                          >AF</el-tag
-                        > </el-tooltip
-                      ><el-tooltip
-                        :content="`OA: ` + WholeSimData.regionList.oa"
-                        placement="top"
-                        effect="light"
-                      >
-                        <el-tag class="ml-2" type="success">OA</el-tag>
-                      </el-tooltip>
-                    </el-form-item>
-                    <!--节点可能会随时加入或退出系统，导致委员会组成会随着时间而改变。-->
-                    <el-form-item label="节点流失率">
-                      <el-input-number
-                        v-model="WholeSimData.nodeChurnRate"
-                        :min="0"
-                        :max="1"
-                        :step="0.001"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <el-form-item label="节点类型(全节点、轻节点、挖矿节点)">
-                      <el-input-number
-                        v-model="WholeSimData.nodeTypRate[0]"
-                        :min="0"
-                        :max="1"
-                        :step="0.01"
-                        size="small"
-                        @change="nodeTypechange"
-                        controls-position="right"
-                      />
-                      <el-input-number
-                        v-model="WholeSimData.nodeTypRate[1]"
-                        style="margin-left: 10px"
-                        :min="0"
-                        :max="1"
-                        :step="0.01"
-                        size="small"
-                        @change="nodeTypechange"
-                        controls-position="right"
-                      />
-                      <el-input-number
-                        v-model="WholeSimData.nodeTypRate[2]"
-                        :min="0"
-                        :max="1"
-                        :step="0.01"
-                        size="small"
-                        :disabled="true"
-                        controls-position="right"
-                      />
-                    </el-form-item>
-                  </el-form>
-                </div>
-                <div v-show="activeIndex == 2">
-                  <el-form
-                    :model="WholeSimData"
-                    class="demo-form-inline"
-                    label-width="160px"
-                  >
-                    <el-form-item label="最大块大小(KB)">
-                      <el-input-number
-                        v-model="WholeSimData.maxBlockSize"
-                        :min="1000"
-                        :step="1000"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <el-form-item label="区块生成间隔(ms)">
-                      <el-input-number
-                        v-model="WholeSimData.blockTime"
-                        :min="2000"
-                        :step="1000"
-                        size="small"
-                        @change="
-                          (currentValue, oldValue) => {
-                            dateTimeChange(currentValue, oldValue, 1);
-                          }
-                        "
-                      />
-                      <el-button type="text" v-model="simDataGapTime" disabled
-                        >虚拟:{{ simDataGapTime }} min</el-button
-                      >
-                    </el-form-item>
-                    <el-form-item label="新块共识奖励">
-                      <el-input-number
-                        v-model="WholeSimData.blockReward"
-                        :min="1"
-                        :step="1"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <el-form-item label="仿真虚拟预结束时间">
-                      虚拟:
-                      <el-date-picker
-                        v-model="simDataEndtime"
-                        type="datetime"
-                        placeholder="选择结束时间"
-                        :disabled="true"
-                        @change="wholeSimDataChange"
-                      />
-                      <div></div>
-                      实际:
-                      <el-date-picker
-                        v-model="WholeSimData.simEndTime"
-                        type="datetime"
-                        placeholder="选择结束时间"
-                        :disabled="true"
-                        @change="wholeSimDataChange"
-                      />
-                    </el-form-item>
-                  </el-form>
-                </div>
-                <div v-show="activeIndex == 3">
-                  <el-form
-                    :model="WholeSimData"
-                    class="demo-form-inline"
-                    label-width="160px"
-                  >
-                    <el-form-item label="跨地区上下行带宽(kb/s)">
-                      <el-input-number
-                        v-model="WholeSimData.transRegionalBandwidth"
-                        :min="1000"
-                        :step="1000"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <el-form-item label="地区延迟列表(ms)">
-                      <el-button
-                        type="primary"
-                        @click="dialogWholeLatencyVisible = true"
-                      >
-                        <el-icon :size="18" class="iconfont">
-                          <Edit />
-                        </el-icon>
-                      </el-button>
-                    </el-form-item>
-                    <el-form-item label="流失节点网络故障率">
-                      <el-input-number
-                        v-model="WholeSimData.churnNodeFailureRate"
-                        :min="0"
-                        :max="1"
-                        :step="0.01"
-                        size="small"
-                      />
-                    </el-form-item>
-                    <el-form-item label="控制(非流失)节点网络故障率">
-                      <el-input-number
-                        v-model="WholeSimData.controllerNodeFailureRate"
-                        :min="0"
-                        :max="1"
-                        :step="0.01"
-                        size="small"
-                      />
-                    </el-form-item>
-                  </el-form>
+                <div class="dataImport">
+                  <!-- <el-button type="primary" size="large">导入数据</el-button> -->
                 </div>
               </div>
             </div>
-          </el-card>
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button v-if="activeIndex != 0" @click="activeIndex--">{{
-                t("PreviousStep")
-              }}</el-button>
-              <el-button
-                type="primary"
-                @click="next"
-                v-text="activeIndex == 4 ? t('create') : t('NextStep')"
-              ></el-button>
-            </span>
-          </template>
-        </el-dialog>
+            <div class="mesBox" v-show="activeIndex == 4">
+              <div v-show="activeIndex == 4">
+                <h2>
+                  配置完相关参数后点击创建,全流程仿真系统会自动开始对预设仿真,当仿真区块链高度达到目标高度时会自动结束仿真。
+                </h2>
+                <div class="dataImport">
+                  <!-- <el-button type="primary" size="large">导入数据</el-button> -->
+                  <el-button type="primary" @click="nextEnd"
+                    >直接获取仿真结果</el-button
+                  >
+                </div>
+              </div>
+            </div>
+            <div
+              class="cardSeting"
+              v-show="activeIndex != 0 && activeIndex != 4"
+            >
+              <div v-show="activeIndex == 1">
+                <el-form
+                  :model="WholeSimData"
+                  class="demo-form-inline"
+                  label-width="120px"
+                >
+                  <el-form-item :label="t('Numberofnodes')">
+                    <el-input-number
+                      v-model="WholeSimData.numOfNodes"
+                      :min="100"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item :label="t('NumberofNeighbor')">
+                    <el-input-number
+                      v-model="WholeSimData.numOfMaxOutBound"
+                      :min="4"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="矿工平均算力(kH/s)">
+                    <el-input-number
+                      v-model="WholeSimData.averageMiningPower"
+                      :min="2000"
+                      :step="1000"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="节点地域分布">
+                    <el-tooltip
+                      :content="`NA: ` + WholeSimData.regionList.na"
+                      placement="top"
+                      effect="light"
+                    >
+                      <el-tag class="ml-2" type="success">NA</el-tag>
+                    </el-tooltip>
+                    <el-tooltip
+                      :content="`EU: ` + WholeSimData.regionList.eu"
+                      placement="top"
+                      effect="light"
+                    >
+                      <el-tag class="ml-2" type="success"
+                        >EU</el-tag
+                      > </el-tooltip
+                    ><el-tooltip
+                      :content="`SA: ` + WholeSimData.regionList.sa"
+                      placement="top"
+                      effect="light"
+                    >
+                      <el-tag class="ml-2" type="success"
+                        >SA</el-tag
+                      > </el-tooltip
+                    ><el-tooltip
+                      :content="`AS: ` + WholeSimData.regionList.as"
+                      placement="top"
+                      effect="light"
+                    >
+                      <el-tag class="ml-2" type="success"
+                        >AS</el-tag
+                      > </el-tooltip
+                    ><el-tooltip
+                      :content="`AF: ` + WholeSimData.regionList.af"
+                      placement="top"
+                      effect="light"
+                    >
+                      <el-tag class="ml-2" type="success"
+                        >AF</el-tag
+                      > </el-tooltip
+                    ><el-tooltip
+                      :content="`OA: ` + WholeSimData.regionList.oa"
+                      placement="top"
+                      effect="light"
+                    >
+                      <el-tag class="ml-2" type="success">OA</el-tag>
+                    </el-tooltip>
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div v-show="activeIndex == 2">
+                <el-form
+                  :model="WholeSimData"
+                  class="demo-form-inline"
+                  label-width="160px"
+                >
+                  <el-form-item label="区块高度">
+                    <el-input-number
+                      v-model="WholeSimData.numOfEndBlock"
+                      :min="1"
+                      size="small"
+                      @change="
+                        (currentValue, oldValue) => {
+                          dateTimeChange(currentValue, oldValue, 0);
+                        }
+                      "
+                    />
+                  </el-form-item>
+                  <el-form-item label="区块内交易量级">
+                    <el-input-number
+                      v-model="WholeSimData.numOfTransInblock"
+                      :min="10"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="共识算法">
+                    <el-select
+                      style="top: 2px; left: 0px; width: 120"
+                      v-model="WholeSimData.consensusAlgorithm"
+                      placeholder="共识算法选择"
+                      size="small"
+                    >
+                      <el-option
+                        v-for="item in optionsAlgorithm"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        :disabled="item.disabled"
+                      />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="交易手续费占比">
+                    <el-input-number
+                      v-model="WholeSimData.transRePer"
+                      :min="0.001"
+                      :step="0.001"
+                      :max="1"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="分叉率">
+                    <el-input-number
+                      v-model="WholeSimData.orphanBlock"
+                      :min="0.0001"
+                      :max="0.05"
+                      :step="0.0001"
+                      size="small"
+                    />
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div v-show="activeIndex == 3">
+                <el-form
+                  :model="WholeSimData"
+                  class="demo-form-inline"
+                  label-width="160px"
+                >
+                  <el-form-item
+                    label="网络上行带宽(kb/s)"
+                    style="margin-bottom: 10px"
+                  >
+                    <div>
+                      NA:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeUploadBandwidth.na"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                      EU:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeUploadBandwidth.eu"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                    </div>
+
+                    <div>
+                      SA:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeUploadBandwidth.sa"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                      AS:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeUploadBandwidth.as"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                    </div>
+                    <div>
+                      AF:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeUploadBandwidth.af"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                      OA:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeUploadBandwidth.oa"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="网络下行带宽(kb/s)">
+                    <div>
+                      NA:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeDownloadBandwidth.na"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                      EU:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeDownloadBandwidth.eu"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                    </div>
+
+                    <div>
+                      SA:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeDownloadBandwidth.sa"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                      AS:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeDownloadBandwidth.as"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                    </div>
+                    <div>
+                      AF:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeDownloadBandwidth.af"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                      OA:
+                      <el-input-number
+                        style="width: 35%"
+                        v-model="WholeSimData.wholeDownloadBandwidth.oa"
+                        :min="10"
+                        size="small"
+                        controls-position="right"
+                      />
+                    </div>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </div>
+            <div
+              class="cardSeting2"
+              v-show="activeIndex != 0 && activeIndex != 4"
+            >
+              <div v-show="activeIndex == 1">
+                <el-form
+                  :model="WholeSimData"
+                  class="demo-form-inline"
+                  label-width="160px"
+                >
+                  <!-- <el-form-item label="节点默认账户量">
+                <el-input-number
+                  v-model="WholeSimData.defaultAccount"
+                  :min="1"
+                  :max="10"
+                  size="small"
+                />
+              </el-form-item> -->
+
+                  <el-form-item label="邻居节点发现间隔(ms)">
+                    <el-input-number
+                      v-model="WholeSimData.neighborDiscoveryInterval"
+                      :min="100"
+                      :step="10"
+                      :max="10000"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <!--节点可能会随时加入或退出系统，导致委员会组成会随着时间而改变。-->
+                  <el-form-item label="节点流失率">
+                    <el-input-number
+                      v-model="WholeSimData.nodeChurnRate"
+                      :min="0"
+                      :max="1"
+                      :step="0.001"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="节点类型(全节点、轻节点、挖矿节点)">
+                    <el-input-number
+                      v-model="WholeSimData.nodeTypRate[0]"
+                      :min="0"
+                      :max="1"
+                      :step="0.01"
+                      size="small"
+                      @change="nodeTypechange"
+                      controls-position="right"
+                    />
+                    <el-input-number
+                      v-model="WholeSimData.nodeTypRate[1]"
+                      style="margin-left: 10px"
+                      :min="0"
+                      :max="1"
+                      :step="0.01"
+                      size="small"
+                      @change="nodeTypechange"
+                      controls-position="right"
+                    />
+                    <el-input-number
+                      v-model="WholeSimData.nodeTypRate[2]"
+                      :min="0"
+                      :max="1"
+                      :step="0.01"
+                      size="small"
+                      :disabled="true"
+                      controls-position="right"
+                    />
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div v-show="activeIndex == 2">
+                <el-form
+                  :model="WholeSimData"
+                  class="demo-form-inline"
+                  label-width="160px"
+                >
+                  <el-form-item label="最大块大小(KB)">
+                    <el-input-number
+                      v-model="WholeSimData.maxBlockSize"
+                      :min="1000"
+                      :step="1000"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="区块生成间隔(ms)">
+                    <el-input-number
+                      v-model="WholeSimData.blockTime"
+                      :min="2000"
+                      :step="1000"
+                      size="small"
+                      @change="
+                        (currentValue, oldValue) => {
+                          dateTimeChange(currentValue, oldValue, 1);
+                        }
+                      "
+                    />
+                    <el-button type="text" v-model="simDataGapTime" disabled
+                      >虚拟:{{ simDataGapTime }} min</el-button
+                    >
+                  </el-form-item>
+                  <el-form-item label="新块共识奖励">
+                    <el-input-number
+                      v-model="WholeSimData.blockReward"
+                      :min="1"
+                      :step="1"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="仿真虚拟预结束时间">
+                    虚拟:
+                    <el-date-picker
+                      v-model="simDataEndtime"
+                      type="datetime"
+                      placeholder="选择结束时间"
+                      :disabled="true"
+                      @change="wholeSimDataChange"
+                    />
+                    <div></div>
+                    实际:
+                    <el-date-picker
+                      v-model="WholeSimData.simEndTime"
+                      type="datetime"
+                      placeholder="选择结束时间"
+                      :disabled="true"
+                      @change="wholeSimDataChange"
+                    />
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div v-show="activeIndex == 3">
+                <el-form
+                  :model="WholeSimData"
+                  class="demo-form-inline"
+                  label-width="160px"
+                >
+                  <el-form-item label="跨地区上下行带宽(kb/s)">
+                    <el-input-number
+                      v-model="WholeSimData.transRegionalBandwidth"
+                      :min="1000"
+                      :step="1000"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="地区延迟列表(ms)">
+                    <el-button
+                      type="primary"
+                      @click="dialogWholeLatencyVisible = true"
+                    >
+                      <el-icon :size="18" class="iconfont">
+                        <Edit />
+                      </el-icon>
+                    </el-button>
+                  </el-form-item>
+                  <el-form-item label="流失节点网络故障率">
+                    <el-input-number
+                      v-model="WholeSimData.churnNodeFailureRate"
+                      :min="0"
+                      :max="1"
+                      :step="0.01"
+                      size="small"
+                    />
+                  </el-form-item>
+                  <el-form-item label="控制(非流失)节点网络故障率">
+                    <el-input-number
+                      v-model="WholeSimData.controllerNodeFailureRate"
+                      :min="0"
+                      :max="1"
+                      :step="0.01"
+                      size="small"
+                    />
+                  </el-form-item>
+                </el-form>
+              </div>
+            </div>
+          </div>
+        </el-card>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button v-if="activeIndex != 0" @click="activeIndex--">{{
+              t("PreviousStep")
+            }}</el-button>
+            <el-button
+              type="primary"
+              @click="next"
+              v-text="activeIndex == 4 ? t('create') : t('NextStep')"
+            ></el-button>
+          </span>
+        </template>
+      </el-dialog>
       <el-dialog
         v-model="dialogWholeLatencyVisible"
         title="地区延迟列表配置"
@@ -1662,26 +1566,13 @@
 
     <div id="china-map" style="width: 100%; height: 100%"></div>
   </div>
-  </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
 import JSONMAP from "../assets/mapRow/world.json";
 import { useI18n } from "vue-i18n";
-import { 
-  Edit,
-  MoreFilled,
-  View,
-  Search,
-  CloseBold,
-  Refresh,
-  UserFilled,
-  More,
-  Delete,
-  Check,
-  Close
-} from "@element-plus/icons";
+import { Edit, MoreFilled, View, Search, CloseBold } from "@element-plus/icons";
 import { useStore } from "vuex";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { reactive, ref } from "vue";
@@ -1715,12 +1606,6 @@ export default {
     MoreFilled,
     Search,
     CloseBold,
-    Refresh,
-    UserFilled,
-    More,
-    Delete,
-    Check,
-    Close
   },
   data() {
     //数据总览
@@ -1756,6 +1641,10 @@ export default {
       {
         tabName: "账户数量:  ",
         data: "0",
+      },
+      {
+        tabName: "默认产块时间单位:  ",
+        data: "10"
       },
     ]);
     //
@@ -1827,14 +1716,8 @@ export default {
     const auth = computed(() => {
       return store.getters.authGetter;
     });
-    const authId = computed(() => {
-      return store.getters.authIdGetter;
-    });
     const getAuth = () => {
       return auth.value;
-    };
-    const getAuthId = () => {
-      return authId.value;
     };
     //全流程仿真相关参数
     //区块链分叉bitconin = 0.58% litecoin:0.30,dogecoin:0.80
@@ -2431,8 +2314,6 @@ export default {
       optionsNodeChange,
       blockTableData: reactive([]),
       blockDataTableData: reactive([]),
-      blockSimReqTableData:ref([]),
-      blockSimUserTableData:ref([]),
       nodeMesVisList,
       blockMesVisList,
       dateTimeChange,
@@ -2447,15 +2328,12 @@ export default {
       simDataId,
       dialogNodeVisible: ref(false),
       simDataeVisible: ref(false),
-      simReqDataeVisible:ref(false),
       dialogBlockVisible: ref(false),
       dialogCreateVisible: ref(false),
-      simDataUserListVisible:ref(false),
       activeName,
       activeSumName,
       reSetSimEndTimeStr,
       getAuth,
-      getAuthId,
       wholeSimSliderValue,
       maxSloderValue,
       mapOption: {},
@@ -2573,50 +2451,6 @@ export default {
       ]),
       dialogSearchDataVisible: ref(false),
       isOpenBigSimList: ref(false),//是否打开大量级别仿真通道
-      teamSimUserList: ref([
-        {
-          id:1,
-          userName: "orrsrosx(A/L)",
-          staus: 1,//1在线，0不在线
-          mes: "区块创建",//最新行为消息
-        },
-        {
-          id:2,
-          userName: "usnhr",
-          staus: 0,//1在线，0不在线
-          mes: "区块消息创建",//最新行为消息
-        },
-        {
-          id:3,
-          userName: "1820553875",
-          staus: 1,//1在线，0不在线
-          mes: "交易消息创建",//最新行为消息
-        },
-        {
-          id:4,
-          userName: "34253453",
-          staus: 1,//1在线，0不在线
-          mes: "交易消息创建",
-        },
-        {
-          id:5,
-          userName: "5q34234",
-          staus: 1,//1在线，0不在线
-          mes: "节点消息创建",
-        },
-        {
-          id:6,
-          userName: "63523452",
-          staus: 1,//1在线，0不在线
-          mes: "节点消息创建",
-        },
-        {
-          id:7,
-          userName: "123123123",
-          staus: 1,//1在线，0不在线
-          mes: "节点消息创建",
-        }
-      ]),
     };
   },
   setup() {
@@ -4661,189 +4495,12 @@ export default {
         );
       }
     },
-    refreshUserStatus() {
-      //数据获取
-      let teamSimUserListChange = [
-        {
-          id:1,
-          userName: "user1",
-          staus: 1,//1在线，0不在线
-          mes: "节点消撒大大阿萨大大是息创建",//最新行为消息
-        },
-        {
-          id:2,
-          userName: "user2",
-          staus: 0,//1在线，0不在线
-          mes: "区块消息创建",//最新行为消息
-        },
-        {
-          id:3,
-          userName: "usaser3",
-          staus: 1,//1在线，0不在线
-          mes: "交易消息创建",//最新行为消息
-        },
-        {
-          id:4,
-          userName: "usaser4",
-          staus: 0,//1在线，0不在线
-          mes: "掉线消息创建",
-        }
-      ]
-      //数据导入
-      this.teamSimUserList.length=0;//清空表
-      for(let i=0;i<teamSimUserListChange.length;i++){
-        this.teamSimUserList.push(teamSimUserListChange[i]);
-      }
-      console.log("您刷新了用户信息状态");
-    },
-    getUserDetailMes() {
-      console.log("您获取了最新事务信息");
-    },
-    deleteTeamSimUser(id,name){
-      ElMessageBox.alert(
-        "您确定要删除该协作仿真用户吗？",
-        "Alert",
-        {
-          // if you want to disable its autofocus
-          // autofocus: false,
-          confirmButtonText: "OK",
-          cancelButtonText: 'Cancel',
-          callback: (action) => {
-            let deStatue = 0;
-            for(let i=0;i<this.teamSimUserList.length;i++){
-              if(this.teamSimUserList[i].id==id&&this.teamSimUserList[i].userName==name){
-                this.teamSimUserList.splice(i,1);
-                deStatue =1;
-              }
-            }
-            if(deStatue==1){
-              ElMessage({
-                message: '删除成功.',
-                type: 'success',
-              })
-            }
-            else{
-              ElMessage.error('未知错误删除失败.')
-            }
-          },
-        }
-      );
-      
-    },
-    //每次点击都会获取新的列表
-    findUserReuList(){
-      this.blockSimReqTableData.length = 0;
-          for (let i = 0; i < 2; i++) {
-            this.blockSimReqTableData.push({
-              id: i+1,
-              userName: "userName"+i,
-              userStatue: "userStatue"+i,
-            });
-          }
-      this.simReqDataeVisible = true;
-    },
-    teamSimReqAccept(index,id,userName){
-      ElMessageBox.alert(
-        "您确定要接受该用户仿真接入请求吗？",
-        "Alert",
-        {
-          // if you want to disable its autofocus
-          // autofocus: false,
-          confirmButtonText: "OK",
-          cancelButtonText: 'Cancel',
-          callback: (action) => {
-            this.teamSimUserList.push({
-              id:id,
-              userName: userName,
-              staus: 1,//1在线，0不在线
-              mes: "加入仿真",//最新行为消息
-            })  
-            this.blockSimReqTableData.splice(index, 1);
-            this.simReqDataeVisible = false;
-          },
-        }
-      ); 
-      console.log("Accept"+id+"-"+userName)
-    },
-    teamSimReqReject(index,id,userName){
-      ElMessageBox.alert(
-        "您确定要拒绝该用户仿真接入请求吗？",
-        "Alert",
-        {
-          // if you want to disable its autofocus
-          // autofocus: false,
-          confirmButtonText: "OK",
-          cancelButtonText: 'Cancel',
-          callback: (action) => {
-            this.blockSimReqTableData.splice(index, 1);
-          },
-        }
-      );
-      console.log("Reject"+id+"-"+userName)
-    },
-    //继续仿真
-    teamSimAgain(id,userName){
-      let param = {
-        userList:null,
-        teamSimDataOutput:null,
-        mes:"",
-        username:userName,
-        wholeSimId:id,
-        status:1
-      }
-      getUserTeamSimAgain(param).then((resnode) => {
-        console.log(resnode);
-      });
-      console.log("again success!")
-    },
-    //查看仿真记录
-    findUserSimList(){
-      let data = {
-        wholeSimDataInput: null,
-        auth: this.getAuth(),
-        id:this.getAuthId()
-      };
-      getUserisOnSimState(data).then((resnode) => {
-        this.blockSimUserTableData.length = 0;
-        if (resnode.userList.length > 0) {
-          for (let i = 0; i < resnode.userList.length; i++) {
-            this.blockSimUserTableData.push({
-              id: resnode.userList[i].simDataConfigId,
-              userName: resnode.userList[i].teamUserName,
-              userStatue: resnode.userList[i].controller,
-            });
-          }
-        }
-        this.simDataUserListVisible = true;
-      });
-      console.log("查看仿真记录")
-    },
-    findaddUserSimList(){
-      
-    }
   },
 };
 </script>
 
-
 <style>
-.leftUserControl {
-  width: 19%;
-  height: 597px;
-  float: left;
-  box-shadow: 0 1px 4px 0 rgba(110, 108, 108, 0.1);
-  border-radius: 4px;
-  margin: auto 2px 2px auto;
-  border: 1px solid #e4e7ed;
-  padding-top: 5px;
-}
-.rightMapControl {
-  height: 597px;
-  width: 80%;
-  float: left;
-}
 .bs-sysMsg {
-  margin-left: 10px;
   margin-top: 10%;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -4870,113 +4527,6 @@ export default {
   padding: 0 1%;
   opacity: 0.8;
 }
-.simUserList {
-  margin-top: 4px;
-  border-top: 1px solid #cecec0;
-  height: 92.5%;
-}
-.targetSimUser {
-  margin: 2px;
-  border: 1px solid #e9e9e3;
-  border-radius: 4px;
-  height: 11%;
-}
-.box-cards-team {
-  height: 100%;
-}
-.textTop-team {
-  width: 100%;
-  text-align: center;
-  word-break: break-all;
-  white-space: nowrap;
-  color: rgba(39, 39, 39, 0.45);
-  margin-top: 2px;
-  margin-bottom: 0;
-  font-size: 14px;
-  line-height: 14px;
-  height: 50%;
-}
-.textTop-team-left {
-  height: 100%;
-  width: 20%;
-  line-height: 100%;
-  text-align: center;
-  float: left;
-}
-.textTop-team-right {
-  float: right;
-  width: 75%;
-  text-align: left;
-  word-break: break-all;
-  white-space: nowrap;
-  color: rgba(39, 39, 39, 0.45);
-  font-size: 16px;
-  line-height: 30px;
-  height: 100%;
-}
-.textBton-team {
-  width: 85%;
-  text-align: center;
-  word-break: break-all;
-  white-space: nowrap;
-  color: rgba(39, 39, 39, 0.45);
-  padding-top: 3px;
-  margin-bottom: 0;
-  margin-left:10px;
-  margin-right:10px;
-  font-size: 14px;
-  line-height: 14px;
-  height: 50%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.iconUtils {
-  padding-right: 10px;
-  color: #908484;
-  float: right;
-}
-.buttonUserIcon{
-  padding-top: 5px;
-  padding-right: 10px;
-  padding-left: 10px;
-  color: #404441;
-}
-.buttonUserIcon :hover{
-  cursor: pointer;
-  color: #6cdc39;
-}
-.iconUtils :hover {
-  cursor: pointer;
-  color: #6cdc39;
-}
-.detail-team-mes{
-  position: relative;
-  right: 2%;
-  height: 100%;
-  width: 20%;
-  line-height: 100%;
-  text-align: center;
-  float: right;
-}
-.detail-team-del{
-  height: 100%;
-  width: 20%;
-  text-align: center;
-  float: right;
-}
-.teamSimUserReq{
-  position: relative;
-  bottom: 0;
-  height: 3%;
-  padding-left: 20%;
-  padding-right: 20%;
-  font-size: 13px;
-}
-.teamSimUserReqText:hover{
-  cursor: pointer;
-  color: #6cdc39;
-}
 
 .reStarteSim {
   margin-top: 1%;
@@ -4985,7 +4535,7 @@ export default {
   right: 1%;
   width: 5%;
   height: auto;
-  z-index: 1000;
+  z-index: 999;
   padding: 0 1%;
   opacity: 0.8;
 }

@@ -1,4 +1,19 @@
 
+使用 vscode
+#### 1. node版本，18.18或者16.04
+#### 2. cd simblockchain-web  
+#### 3. npm install  
+#### 4. npm run dev:dev  本地构建
+
+simblockchain构建流程
+使用IDEA开发
+#### 1. java使用jdk11,maven使用3.6.1阿里云镜像
+#### 2. cd simblockchain 
+#### 3. 准备mysql 8,redis 5.在yml文件内配置环境
+#### 3. maven clean install
+#### 4. 直接运行 
+
+
 ## 介绍
 本项目为构建区块链仿真工具创建可视化界面，该项目采用前后端分离构建，后端代码地址如下[simblockchains(未毕业暂时不开源)](https://github.com/orrsrosx-nonloso/simblockchain),后端代码还未公开,计划成功毕业之后进行完全开源
 ## 软件架构
